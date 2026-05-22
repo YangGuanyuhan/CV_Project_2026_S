@@ -1,6 +1,5 @@
 """Tests for bounding box operations."""
 
-import numpy as np
 import pytest
 
 

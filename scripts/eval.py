@@ -33,7 +33,7 @@ def main():
     args = parse_args()
 
     # Load config
-    config = OmegaConf.load(args.config)
+    _config = OmegaConf.load(args.config)
 
     # Create output directory
     output_dir = Path(args.output_dir)
