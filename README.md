@@ -13,7 +13,8 @@ This project reproduces and evaluates the [Grounding DINO](https://github.com/ID
 
 - **Open-Vocabulary Detection**: Detect objects using free-form text prompts
 - **Visual Grounding**: Localize image regions described by natural language expressions
-- **COCO Evaluation**: Comprehensive evaluation on the COCO dataset
+- **COCO Evaluation**: Comprehensive evaluation on the COCO 2017 validation set
+- **Ablation Studies**: Threshold sensitivity and prompt format analysis
 
 ## Installation
 
@@ -23,7 +24,7 @@ This project reproduces and evaluates the [Grounding DINO](https://github.com/ID
 - CUDA 11.8+ (for GPU training)
 - PyTorch 2.0+
 
-### Setup
+### Quick Setup
 
 ```bash
 # Clone the repository
@@ -38,75 +39,147 @@ venv\Scripts\activate  # Windows
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Install package in development mode
 pip install -e .
+```
+
+### Server Setup
+
+```bash
+# Automated setup script
+bash scripts/setup_env.sh
+
+# Or with virtual environment
+bash scripts/setup_env.sh --venv
+```
+
+### Download Weights and Data
+
+```bash
+# Download Grounding DINO weights
+python scripts/download_weights.py
+
+# Download COCO 2017 val2017 + annotations
+python scripts/download_coco.py
 ```
 
 ## Quick Start
 
-```python
-from src.models import GroundingDINO
-from src.inference import Predictor
+### Single Image Inference
 
-# Load model
-model = GroundingDINO.from_pretrained("checkpoints/groundingdino_swint_ogc.pth")
+```bash
+python scripts/inference.py \
+    --image path/to/image.jpg \
+    --text "person . car . dog ." \
+    --checkpoint checkpoints/groundingdino_swint_ogc.pth
+```
 
-# Run inference
-predictor = Predictor(model)
-results = predictor.predict(
-    image="path/to/image.jpg",
-    text_prompt="the red car on the left"
-)
+### Batch Inference
+
+```bash
+python scripts/inference.py \
+    --image_dir path/to/images/ \
+    --text "person . bicycle . car ." \
+    --output_dir outputs/inference_results
+```
+
+### COCO Evaluation
+
+```bash
+# Subset evaluation (100 images)
+python scripts/eval.py \
+    --config configs/grounding_dino.yaml \
+    --checkpoint checkpoints/groundingdino_swint_ogc.pth \
+    --coco_image_dir data/coco/val2017 \
+    --coco_ann_file data/coco/annotations/instances_val2017.json \
+    --subset_size 100
+
+# Full val2017 evaluation
+python scripts/eval.py \
+    --config configs/grounding_dino.yaml \
+    --checkpoint checkpoints/groundingdino_swint_ogc.pth \
+    --coco_image_dir data/coco/val2017 \
+    --coco_ann_file data/coco/annotations/instances_val2017.json
+```
+
+### Run Experiments
+
+```bash
+python scripts/run_experiments.py \
+    --checkpoint checkpoints/groundingdino_swint_ogc.pth \
+    --coco_image_dir data/coco/val2017 \
+    --coco_ann_file data/coco/annotations/instances_val2017.json \
+    --subset_size 500
 ```
 
 ## Project Structure
 
 ```
 CV_Project_2026_S/
-├── src/                    # Source code
-│   ├── models/            # Model definitions
-│   ├── datasets/          # Dataset loaders
-│   ├── engine/            # Training/evaluation engine
-│   ├── inference/         # Inference tools
-│   └── utils/             # Utility functions
-├── configs/               # Configuration files
-├── scripts/               # Entry point scripts
-├── notebooks/             # Jupyter notebooks
-├── tests/                 # Unit tests
-├── data/                  # Datasets (not tracked)
-├── checkpoints/           # Model weights (not tracked)
-└── docs/                  # Documentation
-```
-
-## Usage
-
-### Training
-
-```bash
-python scripts/train.py --config configs/grounding_dino.yaml
-```
-
-### Evaluation
-
-```bash
-python scripts/eval.py --config configs/grounding_dino.yaml --checkpoint checkpoints/best.pth
-```
-
-### Inference
-
-```bash
-python scripts/inference.py --image path/to/image.jpg --text "your text prompt"
+├── src/                        # Source code
+│   ├── models/                # Model wrapper (Grounding DINO)
+│   │   └── grounding_dino.py  # Official model wrapper
+│   ├── datasets/              # COCO dataset utilities
+│   │   ├── coco_categories.py # 80 COCO classes, prompt builder
+│   │   └── coco_dataset.py    # Dataset helper
+│   ├── engine/                # Evaluation engine
+│   │   └── evaluator.py       # COCOeval integration
+│   ├── inference/             # Inference tools
+│   │   ├── predictor.py       # High-level predictor
+│   │   ├── visualizer.py      # Detection visualization
+│   │   └── coco_visualizer.py # COCO-specific visualization
+│   └── utils/                 # Utilities
+│       └── box_ops.py         # IoU, NMS, coordinate conversion
+├── configs/
+│   └── grounding_dino.yaml    # Project configuration
+├── scripts/
+│   ├── inference.py           # Single/batch inference
+│   ├── eval.py                # COCO evaluation
+│   ├── run_experiments.py     # Ablation experiments
+│   ├── download_weights.py    # Download model weights
+│   ├── download_coco.py       # Download COCO dataset
+│   ├── setup_env.sh           # Linux environment setup
+│   └── setup_env.ps1          # Windows environment setup
+├── tests/
+│   └── test_box_ops.py        # Unit tests for box operations
+├── data/                      # Datasets (not tracked)
+├── checkpoints/               # Model weights (not tracked)
+├── outputs/                   # Results and visualizations
+└── docs/
+    ├── plans/                 # Project plans
+    ├── stage_reports/         # Stage-by-stage reports
+    └── final_report.md        # Final project report
 ```
 
 ## Results
 
 | Model | Backbone | AP<sub>50</sub> | AP | AP<sub>S</sub> | AP<sub>M</sub> | AP<sub>L</sub> |
 |-------|----------|-----------------|-----|-----------------|-----------------|-----------------|
-| Grounding DINO | Swin-T | - | - | - | - | - |
-| Grounding DINO | Swin-B | - | - | - | - | - |
+| Grounding DINO | Swin-T | TBD | TBD | TBD | TBD | TBD |
 
-*Results will be updated after evaluation.*
+*Results will be updated after COCO val2017 evaluation.*
+
+## Development
+
+### Running Tests
+
+```bash
+pytest tests/ -v
+```
+
+### Linting
+
+```bash
+ruff check .          # Check for issues
+ruff check --fix .    # Auto-fix issues
+ruff format .         # Format code
+```
+
+### Pre-commit Hooks
+
+```bash
+pre-commit install
+pre-commit run --all-files
+```
 
 ## Team
 
@@ -116,13 +189,13 @@ python scripts/inference.py --image path/to/image.jpg --text "your text prompt"
 | B | Data & Training | Dataset Loading, Training Pipeline, Data Augmentation |
 | C | Evaluation & Docs | Evaluator, Visualization, Documentation, Testing |
 
-## Timeline
+## Documentation
 
-See [docs/project_timeline.md](docs/project_timeline.md) for detailed project timeline and milestones.
-
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+- [Installation Guide](docs/installation.md)
+- [Project Timeline](docs/project_timeline.md)
+- [Project Plans](docs/plans/)
+- [Stage Reports](docs/stage_reports/)
+- [Final Report](docs/final_report.md)
 
 ## License
 
