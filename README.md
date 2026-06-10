@@ -158,6 +158,23 @@ CV_Project_2026_S/
 
 *Zero-shot results on COCO val2017 (5000 images), box_threshold=0.35, text_threshold=0.25.*
 
+### Report Highlights
+
+Generated report-ready figures are available in `outputs/visualizations/report_highlights/`:
+
+- `01_metrics_overview.png`: full COCO val2017 metric overview
+- `02_size_gap.png`: small/medium/large object performance gap
+- `03_threshold_sensitivity.png`: threshold ablation and detection-count tradeoff
+- `04_prompt_format_comparison.png`: prompt-format ablation
+- `05_success_cases_grid.jpg`: qualitative success examples
+- `06_failure_cases_grid.jpg`: qualitative failure examples
+
+Regenerate them with:
+
+```bash
+python scripts/generate_report_highlights.py
+```
+
 ## Development
 
 ### Running Tests

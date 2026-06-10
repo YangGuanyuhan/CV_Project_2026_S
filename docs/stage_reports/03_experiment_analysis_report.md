@@ -105,6 +105,7 @@ Based on visual inspection of subset evaluation results:
 | Threshold summary MD | `outputs/experiments/threshold_sensitivity/summary.md` |
 | Prompt summary CSV | `outputs/experiments/prompt_comparison/summary.csv` |
 | Prompt summary MD | `outputs/experiments/prompt_comparison/summary.md` |
+| Report figures | `outputs/visualizations/report_highlights/` |
 
 ## 7. Limitations And Failure Cases
 

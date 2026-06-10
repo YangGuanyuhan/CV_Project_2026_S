@@ -103,6 +103,10 @@ Grounding DINO (Liu et al., 2023) extends the DINO detector with grounded pre-tr
 >
 > **Note**: This is a fixed-threshold inference AP. COCO AP is normally computed over all detections ranked by score (no fixed threshold). Using box_threshold=0.35 prunes low-confidence detections before COCOeval's precision-recall curve computation, which reduces recall and may understate true AP. Our ablation confirms this: lowering box_threshold from 0.35 to 0.25 improved AP from 0.4382 to 0.4637 on the subset-500 experiment.
 
+![Full COCO metrics overview](../outputs/visualizations/report_highlights/01_metrics_overview.png)
+
+![Small, medium, and large object AP gap](../outputs/visualizations/report_highlights/02_size_gap.png)
+
 ### Ablation: Threshold Sensitivity
 
 | Run | box_threshold | text_threshold | AP | AP50 | Avg boxes/image |
@@ -112,6 +116,8 @@ Grounding DINO (Liu et al., 2023) extends the DINO detector with grounded pre-tr
 | A3 | 0.45 | 0.30 | 0.3931 | 0.4827 | 5.08 |
 
 > Results on COCO subset 500 images. Lower thresholds yield higher AP but more detections.
+
+![Threshold sensitivity analysis](../outputs/visualizations/report_highlights/03_threshold_sensitivity.png)
 
 ### Ablation: Prompt Format
 
@@ -123,19 +129,25 @@ Grounding DINO (Liu et al., 2023) extends the DINO detector with grounded pre-tr
 
 > Results on COCO subset 500 images. Dot-separated format is dramatically superior.
 
+![Prompt format comparison](../outputs/visualizations/report_highlights/04_prompt_format_comparison.png)
+
 ## 6. Qualitative Analysis
 
 ### Success Cases
 
-> 6+ images showing accurate detections with correct categories and tight bounding boxes.
+The success cases show accurate detections with correct categories and tight bounding boxes, especially for medium and large objects.
 
 Reference: `outputs/visualizations/coco_eval/success_cases/`
 
+![Qualitative success cases](../outputs/visualizations/report_highlights/05_success_cases_grid.jpg)
+
 ### Failure Cases
 
-> 6+ images showing common failure modes.
+The failure cases show common error modes such as missed small objects, crowded-scene confusion, and imperfect localization under occlusion.
 
 Reference: `outputs/visualizations/coco_eval/failure_cases/`
+
+![Qualitative failure cases](../outputs/visualizations/report_highlights/06_failure_cases_grid.jpg)
 
 ### Error Taxonomy
 
