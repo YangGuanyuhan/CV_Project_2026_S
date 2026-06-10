@@ -35,8 +35,7 @@ checkpoints/
 *.onnx
 *.bin
 
-# Training outputs
-outputs/
+# Training outputs (large files only)
 runs/
 wandb/
 *.log
