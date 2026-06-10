@@ -1,0 +1,12 @@
+{
+  "image_path": "E:\\Desktop\\CV_ComputerVision\\CV_Project_2026_S\\data\\demo_images\\000000000776.jpg",
+  "image_size": [
+    640,
+    428
+  ],
+  "boxes": [],
+  "scores": [],
+  "phrases": [],
+  "num_detections": 0,
+  "inference_time": 0.9774
+}

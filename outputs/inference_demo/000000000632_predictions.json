@@ -1,0 +1,23 @@
+{
+  "image_path": "E:\\Desktop\\CV_ComputerVision\\CV_Project_2026_S\\data\\demo_images\\000000000632.jpg",
+  "image_size": [
+    483,
+    640
+  ],
+  "boxes": [
+    [
+      246.2966651916504,
+      231.7052993774414,
+      349.6485252380371,
+      318.8142318725586
+    ]
+  ],
+  "scores": [
+    0.6080112457275391
+  ],
+  "phrases": [
+    "chair"
+  ],
+  "num_detections": 1,
+  "inference_time": 0.9668
+}

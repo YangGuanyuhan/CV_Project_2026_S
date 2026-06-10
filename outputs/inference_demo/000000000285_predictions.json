@@ -1,0 +1,23 @@
+{
+  "image_path": "E:\\Desktop\\CV_ComputerVision\\CV_Project_2026_S\\data\\demo_images\\000000000285.jpg",
+  "image_size": [
+    640,
+    586
+  ],
+  "boxes": [
+    [
+      0.4288330078125,
+      68.99319458007812,
+      585.57861328125,
+      639.5816345214844
+    ]
+  ],
+  "scores": [
+    0.432446151971817
+  ],
+  "phrases": [
+    "dog cat"
+  ],
+  "num_detections": 1,
+  "inference_time": 1.0887
+}
