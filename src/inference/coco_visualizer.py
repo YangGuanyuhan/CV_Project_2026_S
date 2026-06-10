@@ -139,7 +139,8 @@ def _is_success_case(preds: list[dict], gt_anns: list[dict], coco_gt) -> bool:
     - Not too many false positives relative to GT
     """
     if not preds or not gt_anns:
-        return bool(preds) and not bool(gt_anns)  # True positive on empty = FP
+        # No GT + predictions = false positive; no predictions + GT = missed
+        return False
 
     from src.utils.box_ops import box_iou
 

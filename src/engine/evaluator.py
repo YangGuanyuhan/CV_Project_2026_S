@@ -4,6 +4,7 @@ Runs inference on COCO images, converts predictions to COCO format,
 and computes standard COCO metrics using pycocotools.
 """
 
+import copy
 import json
 import logging
 import time
@@ -23,8 +24,8 @@ logger = logging.getLogger(__name__)
 class COCOEvaluator:
     """Evaluator for running Grounding DINO on COCO and computing metrics.
 
-    Handles the full pipeline: load images → run inference → convert to COCO
-    format → evaluate with pycocotools → save results.
+    Handles the full pipeline: load images -> run inference -> convert to COCO
+    format -> evaluate with pycocotools -> save results.
 
     Example:
         >>> evaluator = COCOEvaluator(
@@ -76,7 +77,7 @@ class COCOEvaluator:
         box_threshold: float = 0.35,
         text_threshold: float = 0.25,
         max_images: int | None = None,
-    ) -> list[dict]:
+    ) -> tuple[list[dict], list[int]]:
         """Run inference on COCO images and collect raw predictions.
 
         Args:
@@ -87,7 +88,7 @@ class COCOEvaluator:
             max_images: Maximum number of images to process.
 
         Returns:
-            List of raw prediction dicts (before COCO format conversion).
+            Tuple of (raw_predictions, eval_image_ids).
         """
         image_dir = Path(image_dir)
 
@@ -97,6 +98,7 @@ class COCOEvaluator:
         if max_images is not None:
             image_ids = image_ids[:max_images]
 
+        eval_image_ids = list(image_ids)
         logger.info("Running inference on %d images...", len(image_ids))
 
         # Collect all unique phrases for mapping
@@ -153,14 +155,14 @@ class COCOEvaluator:
             elapsed / max(len(raw_predictions), 1),
         )
 
-        # Build phrase → category mapping
+        # Build phrase -> category mapping
         self._phrase_mapping = build_phrase_to_category_mapping(list(all_phrases))
         logger.info("Mapped %d unique phrases to COCO categories", len(self._phrase_mapping))
         unmapped = all_phrases - set(self._phrase_mapping.keys())
         if unmapped:
             logger.warning("Unmapped phrases: %s", list(unmapped)[:20])
 
-        return raw_predictions
+        return raw_predictions, eval_image_ids
 
     def convert_to_coco_format(self, raw_predictions: list[dict]) -> list[dict]:
         """Convert raw predictions to COCO detection result format.
@@ -211,12 +213,14 @@ class COCOEvaluator:
         self,
         coco_results: list[dict] | None = None,
         raw_predictions: list[dict] | None = None,
+        eval_image_ids: list[int] | None = None,
     ) -> dict:
         """Run COCO evaluation using pycocotools.
 
         Args:
             coco_results: Pre-converted COCO format results. If None, uses raw_predictions.
             raw_predictions: Raw predictions to convert and evaluate.
+            eval_image_ids: List of image IDs to evaluate against. If None, uses all GT images.
 
         Returns:
             Dictionary with evaluation metrics.
@@ -230,13 +234,18 @@ class COCOEvaluator:
             logger.warning("No predictions to evaluate!")
             return {"metrics": {}, "summary": "No predictions"}
 
-        # Load results into COCO API
+        # Load results into COCO API (use deepcopy to avoid polluting coco_results)
         from pycocotools.cocoeval import COCOeval
 
-        coco_dt = self._coco_gt.loadRes(coco_results)
+        coco_dt = self._coco_gt.loadRes(copy.deepcopy(coco_results))
 
         # Run COCOeval for bbox
         coco_eval = COCOeval(self._coco_gt, coco_dt, "bbox")
+
+        # Restrict evaluation to the requested image IDs
+        if eval_image_ids is not None:
+            coco_eval.params.imgIds = eval_image_ids
+
         coco_eval.evaluate()
         coco_eval.accumulate()
         coco_eval.summarize()
@@ -266,11 +275,14 @@ class COCOEvaluator:
             f"APL (large):        {metrics['APL']:.4f}",
         ]
 
+        images_with_preds = len(set(r["image_id"] for r in coco_results))
+
         return {
             "metrics": metrics,
             "summary": "\n".join(summary_lines),
             "num_predictions": len(coco_results),
-            "num_images_evaluated": len(set(r["image_id"] for r in coco_results)),
+            "num_requested_images": len(eval_image_ids) if eval_image_ids else len(self._coco_gt.getImgIds()),
+            "num_images_with_predictions": images_with_preds,
         }
 
     def save_results(
@@ -284,14 +296,14 @@ class COCOEvaluator:
 
         Args:
             output_dir: Directory to save results.
-            coco_results: COCO-format prediction results.
+            coco_results: COCO-format prediction results (clean, not polluted by loadRes).
             eval_results: Evaluation metrics from evaluate().
             config: Optional config dict to save as snapshot.
         """
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Save predictions JSON
+        # Save predictions JSON (clean detection results only)
         pred_path = output_dir / "predictions.json"
         with open(pred_path, "w", encoding="utf-8") as f:
             json.dump(coco_results, f, indent=2)
@@ -311,7 +323,8 @@ class COCOEvaluator:
             f.write(f"Annotation file: {self.annotation_file}\n")
             f.write(f"Text prompt: {self.text_prompt}\n")
             f.write(f"Num predictions: {eval_results.get('num_predictions', 0)}\n")
-            f.write(f"Num images evaluated: {eval_results.get('num_images_evaluated', 0)}\n\n")
+            f.write(f"Num requested images: {eval_results.get('num_requested_images', 0)}\n")
+            f.write(f"Num images with predictions: {eval_results.get('num_images_with_predictions', 0)}\n\n")
             f.write("Metrics:\n")
             f.write(eval_results.get("summary", "N/A") + "\n")
         logger.info("Saved eval log to %s", log_path)
@@ -319,14 +332,19 @@ class COCOEvaluator:
         # Save config snapshot
         if config is not None:
             config_path = output_dir / "config.yaml"
-            if hasattr(config, "to_yaml"):
-                with open(config_path, "w", encoding="utf-8") as f:
-                    f.write(config.to_yaml())
-            else:
-                import yaml
+            try:
+                from omegaconf import OmegaConf
 
+                if hasattr(config, "to_yaml"):
+                    with open(config_path, "w", encoding="utf-8") as f:
+                        f.write(config.to_yaml())
+                else:
+                    config_dict = OmegaConf.to_container(config, resolve=True)
+                    with open(config_path, "w", encoding="utf-8") as f:
+                        OmegaConf.save(config_dict, f)
+            except Exception:
                 with open(config_path, "w", encoding="utf-8") as f:
-                    yaml.dump(config, f, default_flow_style=False)
+                    f.write(str(config))
             logger.info("Saved config to %s", config_path)
 
         # Save phrase mapping

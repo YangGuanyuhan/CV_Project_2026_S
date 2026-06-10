@@ -148,8 +148,6 @@ def main():
 
     # Setup output directory
     output_dir = Path(args.output_dir)
-    if args.subset_size:
-        output_dir = output_dir / f"subset_{args.subset_size}"
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Log configuration
@@ -238,7 +236,7 @@ def main():
         text_prompt=args.text_prompt,
     )
 
-    raw_predictions = evaluator.run_inference(
+    raw_predictions, eval_image_ids = evaluator.run_inference(
         image_dir=args.coco_image_dir,
         image_ids=image_ids,
         box_threshold=args.box_threshold,
@@ -252,7 +250,7 @@ def main():
 
     # Step 6: Evaluate
     logger.info("\n--- Step 6: Computing COCO Metrics ---")
-    eval_results = evaluator.evaluate(coco_results=coco_results)
+    eval_results = evaluator.evaluate(coco_results=coco_results, eval_image_ids=eval_image_ids)
 
     # Step 7: Save results
     logger.info("\n--- Step 7: Saving Results ---")
@@ -279,7 +277,8 @@ def main():
     logger.info("\nResults:")
     logger.info(eval_results["summary"])
     logger.info("\nPredictions: %d", eval_results["num_predictions"])
-    logger.info("Images evaluated: %d", eval_results["num_images_evaluated"])
+    logger.info("Requested images: %d", eval_results["num_requested_images"])
+    logger.info("Images with predictions: %d", eval_results["num_images_with_predictions"])
     logger.info("Total time: %.1fs", total_time)
     logger.info("Output: %s", output_dir)
     logger.info("=" * 60)

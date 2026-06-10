@@ -80,7 +80,7 @@ class GroundingDINOModel:
         image: np.ndarray,
         text_prompt: str,
         box_threshold: float = 0.35,
-        text_threshold: float = 25,
+        text_threshold: float = 0.25,
     ) -> tuple[np.ndarray, list[float], list[str]]:
         """Run inference on a single image.
 
@@ -111,7 +111,9 @@ class GroundingDINOModel:
 
         # Preprocess image for the model
         transform = self._get_transform()
-        image_tensor = transform(image_pil).to(self.device)
+        dummy_target = {"size": [image_pil.height, image_pil.width], "orig_size": [image_pil.height, image_pil.width]}
+        image_tensor, _ = transform(image_pil, dummy_target)
+        image_tensor = image_tensor.to(self.device)
 
         # Preprocess caption
         caption = preprocess_caption(text_prompt)

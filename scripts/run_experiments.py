@@ -95,7 +95,7 @@ def run_single_experiment(
         text_prompt=text_prompt,
     )
 
-    raw_predictions = evaluator.run_inference(
+    raw_predictions, eval_image_ids = evaluator.run_inference(
         image_dir=image_dir,
         image_ids=image_ids,
         box_threshold=box_threshold,
@@ -103,7 +103,7 @@ def run_single_experiment(
     )
 
     coco_results = evaluator.convert_to_coco_format(raw_predictions)
-    eval_results = evaluator.evaluate(coco_results=coco_results)
+    eval_results = evaluator.evaluate(coco_results=coco_results, eval_image_ids=eval_image_ids)
 
     evaluator.save_results(
         output_dir=str(output_dir),

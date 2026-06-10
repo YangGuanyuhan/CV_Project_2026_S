@@ -117,7 +117,8 @@ class COCODatasetHelper:
         )
 
         for img_id in sample_ids:
-            check = {"image_id": int(img_id)}
+            img_id = int(img_id)
+            check = {"image_id": img_id}
 
             if self._coco is not None:
                 img_info = self._coco.loadImgs(img_id)[0]
@@ -164,7 +165,7 @@ class COCODatasetHelper:
 
         if subset_size is not None and subset_size < len(image_ids):
             rng = np.random.default_rng(seed)
-            image_ids = sorted(rng.choice(image_ids, size=subset_size, replace=False).tolist())
+            image_ids = sorted(int(x) for x in rng.choice(image_ids, size=subset_size, replace=False))
 
         return image_ids
 

@@ -2,40 +2,40 @@
 
 ## 1. Actual Work Completed
 
-> **Status**: Pending implementation
+> **Status**: ✅ Completed
 >
-> This report will be completed after running the reproduction pipeline. Fill in with actual results.
+> Successfully reproduced Grounding DINO inference pipeline with official pretrained weights.
 
 ### Environment Setup
 
-- Python version: TBD
-- PyTorch version: TBD
-- CUDA version: TBD
-- GPU: TBD
-- groundingdino-py version: TBD
+- Python version: 3.10.20
+- PyTorch version: 2.7.1+cu118
+- CUDA version: 11.8
+- GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+- groundingdino-py version: 0.4.0
 
 ### Model Loading
 
 - Config: `groundingdino/config/GroundingDINO_SwinT_OGC.py`
 - Checkpoint: `checkpoints/groundingdino_swint_ogc.pth`
-- Device: TBD
+- Device: cuda
 
 ### Demo Inference
 
-- Number of test images: TBD
+- Number of test images: 5
 - Output directory: `outputs/inference_demo/`
-- Results: TBD
+- Results: All 5 images processed successfully, 9 total detections
 
 ## 2. Original Plan vs Actual Outcome
 
 | Plan Item | Status | Notes |
 |-----------|--------|-------|
-| Environment setup | TBD | |
-| Weight download | TBD | |
-| Single image inference | TBD | |
-| Batch inference wrapper | TBD | |
-| 3+ demo visualizations | TBD | |
-| 3+ prediction JSONs | TBD | |
+| Environment setup | ✅ Done | conda env grounding_dino, Python 3.10, PyTorch 2.7.1+cu118 |
+| Weight download | ✅ Done | groundingdino_swint_ogc.pth (662MB) |
+| Single image inference | ✅ Done | Via Predictor class |
+| Batch inference wrapper | ✅ Done | Via scripts/inference.py --image_dir |
+| 3+ demo visualizations | ✅ Done | 5 annotated images saved |
+| 3+ prediction JSONs | ✅ Done | 5 prediction JSONs saved |
 
 ## 3. Problem Definition
 
@@ -78,23 +78,29 @@ python scripts/inference.py --image data/demo_images/test.jpg --text "person . c
 
 ## 6. Results And Evaluation
 
-> Fill in after running inference.
-
 ### Demo Images
 
 | Image | Detections | Inference Time | Notes |
 |-------|-----------|----------------|-------|
-| TBD | TBD | TBD | |
+| 000000000139.jpg | 5 | 6.093s | First image includes model warmup |
+| 000000000285.jpg | 1 | 1.089s | |
+| 000000000632.jpg | 1 | 0.967s | |
+| 000000000776.jpg | 0 | 0.977s | No objects matched the prompt |
+| 000000000872.jpg | 2 | 0.990s | |
+| **Average** | **1.8** | **2.087s** | Excluding warmup: ~1.0s/image |
 
 ### Visualizations
 
 > Reference: `outputs/inference_demo/*.jpg`
 
+Annotated images with bounding boxes and confidence scores saved for all 5 test images.
+
 ## 7. Limitations And Failure Cases
 
-- TBD: Cases where the model fails to detect objects
-- TBD: Cases of incorrect phrase matching
-- TBD: Performance on edge cases
+- First image inference is slow (~6s) due to CUDA warmup and model initialization
+- Some images produce 0 detections when no objects match the text prompt (e.g., 000000000776.jpg)
+- Text prompt design affects detection quality — dot-separated format is recommended
+- Inference speed is ~1s/image on RTX 4060 Laptop GPU
 
 ## 8. Future Work
 
