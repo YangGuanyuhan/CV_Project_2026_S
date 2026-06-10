@@ -100,13 +100,15 @@ Grounding DINO (Liu et al., 2023) extends the DINO detector with grounded pre-tr
 | Grounding DINO | Swin-T | dot-separated 80 classes | 0.4055 | 0.5317 | 0.4422 | 0.2587 | 0.4328 | 0.5510 |
 
 > Results on full COCO val2017 (5000 images), zero-shot, box_threshold=0.35, text_threshold=0.25.
+>
+> **Note**: This is a fixed-threshold inference AP. COCO AP is normally computed over all detections ranked by score (no fixed threshold). Using box_threshold=0.35 prunes low-confidence detections before COCOeval's precision-recall curve computation, which reduces recall and may understate true AP. Our ablation confirms this: lowering box_threshold from 0.35 to 0.25 improved AP from 0.4382 to 0.4637 on the subset-500 experiment.
 
 ### Ablation: Threshold Sensitivity
 
 | Run | box_threshold | text_threshold | AP | AP50 | Avg boxes/image |
 |-----|---------------|----------------|------|------|-----------------|
 | A1 | 0.25 | 0.20 | 0.4637 | 0.5884 | 13.85 |
-| A2 | 0.35 | 0.25 | 0.4382 | 0.5532 | 7.81 |
+| A2 | 0.35 | 0.25 | 0.4382 | 0.5532 | 7.72 |
 | A3 | 0.45 | 0.30 | 0.3931 | 0.4827 | 5.08 |
 
 > Results on COCO subset 500 images. Lower thresholds yield higher AP but more detections.
@@ -137,13 +139,13 @@ Reference: `outputs/visualizations/coco_eval/failure_cases/`
 
 ### Error Taxonomy
 
-| Error Type | Description | Frequency |
-|------------|-------------|-----------|
-| Small object miss | Small objects not detected | ~40% of GT small objects |
-| Crowded scene | Duplicate/confused boxes | ~10% of images |
-| Phrase mismatch | Wrong category mapping | ~5% of detections |
-| Background FP | Background detected as object | ~3% of detections |
-| Occlusion | Poor localization | ~15% of occluded objects |
+| Error Type | Description | Observation |
+|------------|-------------|-------------|
+| Small object miss | Small objects not detected | Frequent — APS=0.25-0.31 vs APL=0.58-0.63 |
+| Crowded scene | Duplicate/confused boxes | Occasional in dense scenes |
+| Phrase mismatch | Wrong category mapping | Occasional — unmapped phrases reduce recall |
+| Background FP | Background detected as object | Rare — more common at low thresholds |
+| Occlusion | Poor localization | Moderate — partial occlusion lowers confidence |
 
 ### Per-Size Performance
 

@@ -154,9 +154,9 @@ CV_Project_2026_S/
 
 | Model | Backbone | AP<sub>50</sub> | AP | AP<sub>S</sub> | AP<sub>M</sub> | AP<sub>L</sub> |
 |-------|----------|-----------------|-----|-----------------|-----------------|-----------------|
-| Grounding DINO | Swin-T | TBD | TBD | TBD | TBD | TBD |
+| Grounding DINO | Swin-T | 0.5317 | 0.4055 | 0.2587 | 0.4328 | 0.5510 |
 
-*Results will be updated after COCO val2017 evaluation.*
+*Zero-shot results on COCO val2017 (5000 images), box_threshold=0.35, text_threshold=0.25.*
 
 ## Development
 

@@ -81,6 +81,7 @@ class TestCOCOEvalParams:
 
     def test_cocoeval_imgids_subset(self):
         """COCOeval should only evaluate on specified imgIds."""
+        pytest.importorskip("pycocotools")
         from pycocotools.coco import COCO
         from pycocotools.cocoeval import COCOeval
 
@@ -98,12 +99,14 @@ class TestCOCOEvalParams:
 
         # Create a fake detection matching first GT
         ann = anns[0]
-        fake_result = [{
-            "image_id": img_id,
-            "category_id": ann["category_id"],
-            "bbox": ann["bbox"],
-            "score": 0.9,
-        }]
+        fake_result = [
+            {
+                "image_id": img_id,
+                "category_id": ann["category_id"],
+                "bbox": ann["bbox"],
+                "score": 0.9,
+            }
+        ]
 
         coco_dt = coco_gt.loadRes(fake_result)
         coco_eval = COCOeval(coco_gt, coco_dt, "bbox")
@@ -118,6 +121,7 @@ class TestCOCOEvalParams:
 
     def test_predictions_not_polluted_by_loadres(self):
         """loadRes should not modify the original results list."""
+        pytest.importorskip("pycocotools")
         import copy
 
         from pycocotools.coco import COCO
@@ -125,12 +129,14 @@ class TestCOCOEvalParams:
         coco_gt = COCO("data/coco/annotations/instances_val2017.json")
         all_ids = coco_gt.getImgIds()
 
-        original = [{
-            "image_id": all_ids[0],
-            "category_id": 1,
-            "bbox": [10.0, 20.0, 30.0, 40.0],
-            "score": 0.5,
-        }]
+        original = [
+            {
+                "image_id": all_ids[0],
+                "category_id": 1,
+                "bbox": [10.0, 20.0, 30.0, 40.0],
+                "score": 0.5,
+            }
+        ]
         original_copy = copy.deepcopy(original)
 
         _ = coco_gt.loadRes(copy.deepcopy(original))

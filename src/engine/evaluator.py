@@ -232,7 +232,16 @@ class COCOEvaluator:
 
         if not coco_results:
             logger.warning("No predictions to evaluate!")
-            return {"metrics": {}, "summary": "No predictions"}
+            num_requested = (
+                len(eval_image_ids) if eval_image_ids else len(self._coco_gt.getImgIds())
+            )
+            return {
+                "metrics": {},
+                "summary": "No predictions",
+                "num_predictions": 0,
+                "num_requested_images": num_requested,
+                "num_images_with_predictions": 0,
+            }
 
         # Load results into COCO API (use deepcopy to avoid polluting coco_results)
         from pycocotools.cocoeval import COCOeval
@@ -281,7 +290,9 @@ class COCOEvaluator:
             "metrics": metrics,
             "summary": "\n".join(summary_lines),
             "num_predictions": len(coco_results),
-            "num_requested_images": len(eval_image_ids) if eval_image_ids else len(self._coco_gt.getImgIds()),
+            "num_requested_images": len(eval_image_ids)
+            if eval_image_ids
+            else len(self._coco_gt.getImgIds()),
             "num_images_with_predictions": images_with_preds,
         }
 
@@ -324,7 +335,9 @@ class COCOEvaluator:
             f.write(f"Text prompt: {self.text_prompt}\n")
             f.write(f"Num predictions: {eval_results.get('num_predictions', 0)}\n")
             f.write(f"Num requested images: {eval_results.get('num_requested_images', 0)}\n")
-            f.write(f"Num images with predictions: {eval_results.get('num_images_with_predictions', 0)}\n\n")
+            f.write(
+                f"Num images with predictions: {eval_results.get('num_images_with_predictions', 0)}\n\n"
+            )
             f.write("Metrics:\n")
             f.write(eval_results.get("summary", "N/A") + "\n")
         logger.info("Saved eval log to %s", log_path)

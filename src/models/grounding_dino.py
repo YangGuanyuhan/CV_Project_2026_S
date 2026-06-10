@@ -111,7 +111,10 @@ class GroundingDINOModel:
 
         # Preprocess image for the model
         transform = self._get_transform()
-        dummy_target = {"size": [image_pil.height, image_pil.width], "orig_size": [image_pil.height, image_pil.width]}
+        dummy_target = {
+            "size": [image_pil.height, image_pil.width],
+            "orig_size": [image_pil.height, image_pil.width],
+        }
         image_tensor, _ = transform(image_pil, dummy_target)
         image_tensor = image_tensor.to(self.device)
 

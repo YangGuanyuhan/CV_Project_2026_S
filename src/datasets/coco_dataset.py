@@ -165,7 +165,9 @@ class COCODatasetHelper:
 
         if subset_size is not None and subset_size < len(image_ids):
             rng = np.random.default_rng(seed)
-            image_ids = sorted(int(x) for x in rng.choice(image_ids, size=subset_size, replace=False))
+            image_ids = sorted(
+                int(x) for x in rng.choice(image_ids, size=subset_size, replace=False)
+            )
 
         return image_ids
 

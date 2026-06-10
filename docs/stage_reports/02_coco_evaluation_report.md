@@ -7,7 +7,7 @@
 ### Dataset
 
 - Split: val2017
-- Number of images evaluated: 100 (subset), 5000 (full, in progress)
+- Number of images evaluated: 100 (subset), 5000 (full val2017)
 - Annotation file: `data/coco/annotations/instances_val2017.json`
 
 ### Evaluation Results (Full val2017, 5000 images)
@@ -41,7 +41,7 @@
 | Subset evaluation (100) | ✅ Done | AP=0.4620, AP50=0.5789 |
 | Full val2017 evaluation | ✅ Done | AP=0.4055, AP50=0.5317 |
 | COCO format conversion | ✅ Done | xyxy→xywh, phrase→category mapping |
-| 20+ visualizations | ⏳ Pending | Will generate after full eval completes |
+| 20+ visualizations | ✅ Done | Generated in outputs/visualizations/coco_eval/ |
 
 ## 3. Problem Definition
 

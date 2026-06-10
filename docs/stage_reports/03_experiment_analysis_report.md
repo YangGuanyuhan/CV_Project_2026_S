@@ -70,7 +70,7 @@ This stage analyzes Grounding DINO's behavior through controlled experiments:
 | Run | box_threshold | text_threshold | AP | AP50 | AP75 | APS | APM | APL | avg_boxes/image |
 |-----|---------------|----------------|------|------|------|------|------|------|-----------------|
 | A1 | 0.25 | 0.20 | 0.4637 | 0.5884 | 0.5083 | 0.3061 | 0.5010 | 0.6338 | 13.85 |
-| A2 | 0.35 | 0.25 | 0.4382 | 0.5532 | 0.4793 | 0.2650 | 0.4759 | 0.6269 | 7.81 |
+| A2 | 0.35 | 0.25 | 0.4382 | 0.5532 | 0.4793 | 0.2650 | 0.4759 | 0.6269 | 7.72 |
 | A3 | 0.45 | 0.30 | 0.3931 | 0.4827 | 0.4317 | 0.2092 | 0.4269 | 0.5841 | 5.08 |
 
 **Key Finding**: Lower thresholds yield higher AP (0.4637 vs 0.3931) but produce nearly 3× more detections per image (13.85 vs 5.08). The AP gain from A2→A1 is +2.5% while detections increase by 77%.
@@ -87,15 +87,15 @@ This stage analyzes Grounding DINO's behavior through controlled experiments:
 
 ### C: Qualitative Error Analysis
 
-Based on evaluation of 100-image subset:
+Based on visual inspection of subset evaluation results:
 
-| Error Type | Estimated Frequency | Description |
-|------------|-------------------|-------------|
-| Small object miss | ~40% of GT small objects | Small objects (APS=0.2501) are much harder than large (APL=0.6262) |
-| Phrase mismatch | ~5% of detections | Some detected phrases don't map to COCO categories |
-| Duplicate detections | ~10% of images | Multiple boxes for same object at different thresholds |
-| Background FP | ~3% of detections | Some background regions detected as objects |
-| Occlusion | ~15% of occluded objects | Partial occlusion reduces detection confidence |
+| Error Type | Observation | Description |
+|------------|------------|-------------|
+| Small object miss | Frequent | Small objects (APS=0.25-0.31) are much harder than large (APL=0.58-0.63), consistent across all experiments |
+| Phrase mismatch | Occasional | Some detected phrases don't map to COCO categories, reducing effective recall |
+| Duplicate detections | Occasional | Multiple boxes for same object may appear at lower thresholds |
+| Background FP | Rare | Some background regions detected as objects, especially at low thresholds |
+| Occlusion | Moderate | Partial occlusion reduces detection confidence and localization accuracy |
 
 ### Output Files
 

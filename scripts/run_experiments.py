@@ -111,9 +111,8 @@ def run_single_experiment(
         eval_results=eval_results,
     )
 
-    # Count average boxes per image
-    n_images = len(set(r["image_id"] for r in coco_results)) or 1
-    avg_boxes = len(coco_results) / n_images
+    # Count average boxes per image (denominator = all evaluated images, not just those with predictions)
+    avg_boxes = len(coco_results) / len(eval_image_ids) if eval_image_ids else 0
 
     return {
         "metrics": eval_results["metrics"],
