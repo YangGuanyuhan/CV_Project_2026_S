@@ -22,14 +22,9 @@ bash scripts/setup_env.sh            # Linux
 python scripts/download_weights.py   # Download Grounding DINO checkpoint
 python scripts/download_coco.py      # Download COCO 2017 val2017 + annotations
 
-# Lint & format (ruff)
-ruff check .                        # lint
-ruff format --check .               # format check
-ruff format . && ruff check --fix . # auto-fix
-
-# Tests
-pytest tests/ -v                    # run all tests
-pytest tests/test_box_ops.py -v     # run single test file
+# Generate visualizations
+python scripts/generate_report_highlights.py   # Generate 6 report highlight figures
+python scripts/generate_visualizations.py      # Generate success/failure case figures
 
 # Inference
 python scripts/inference.py \
@@ -88,8 +83,11 @@ scripts/
 ├── inference.py             # CLI: single/batch image inference
 ├── eval.py                  # CLI: COCO evaluation (subset or full)
 ├── run_experiments.py       # CLI: threshold/prompt ablation experiments
+├── generate_report_highlights.py  # Generate report visualization figures
+├── generate_visualizations.py     # Generate success/failure case visualizations
 ├── download_weights.py      # Download Grounding DINO checkpoints
 ├── download_coco.py         # Download COCO 2017 dataset
+├── train.py                 # Training script (not used — no fine-tuning performed)
 ├── setup_env.sh             # Linux environment setup
 └── setup_env.ps1            # Windows environment setup
 
@@ -97,12 +95,15 @@ configs/
 └── grounding_dino.yaml      # Model, dataset, training, eval, grounding_dino settings
 
 tests/
-└── test_box_ops.py          # 7 tests for box operations (all passing)
+├── test_box_ops.py          # 7 tests for box operations (IoU, NMS, coord conversion)
+└── test_evaluator.py        # 15 tests for evaluator (categories, phrase matching, COCOeval)
 
 docs/
 ├── plans/                   # Detailed project plans (6 files)
-├── stage_reports/           # Stage-by-stage report templates
-└── final_report.md          # Final report template
+├── stage_reports/           # Stage-by-stage reports (3 files)
+├── final_report.md          # Complete final report with results
+├── installation.md          # Installation guide
+└── project_timeline.md      # Project timeline
 ```
 
 ## Key Interfaces
@@ -159,19 +160,6 @@ The project uses `groundingdino-py` as the official inference backend:
 - Target: Swin-T OGC zero-shot AP ≈ 48.4/48.5
 - Result format: `[{"image_id": int, "category_id": int, "bbox": [x,y,w,h], "score": float}]`
 
-## Code Style
-
-- **Ruff** for both linting and formatting (line length 100, target Python 3.10)
-- Lint rules: E, W, F (pyflakes), I (isort), B (flake8-bugbear), UP (pyupgrade)
-- CI runs `ruff check .` and `ruff format --check .` on push/PR to main/develop
-- Pre-commit hooks: ruff, trailing-whitespace, end-of-file-fixer, check-yaml, check-merge-conflict, debug-statements
-
-## Git Conventions
-
-- Branches: `feat/`, `fix/`, `docs/`, `refactor/`, `test/` prefixes
-- Commits: Conventional Commits format — `feat(models): add Swin Transformer backbone`
-- PRs target `develop` branch, require at least one approval
-
 ## Server Portability
 
 All paths are configurable via `configs/grounding_dino.yaml` CLI overrides. No hardcoded absolute paths. When transferring to a server:
@@ -195,7 +183,7 @@ All paths are configurable via `configs/grounding_dino.yaml` CLI overrides. No h
 ## Project Deliverables
 
 - Code: 5 modules under `src/` (models, datasets, engine, inference, utils)
-- Scripts: 7 CLI scripts (inference, eval, run_experiments, download_*, setup_*)
+- Scripts: 10 CLI scripts (inference, eval, run_experiments, generate_*, download_*, train, setup_*)
 - Tests: 22 unit tests all passing
 - Documentation: 3 stage reports + final report + 6 plan documents
 - Visualization: 6 report highlight figures + 15 case figures
