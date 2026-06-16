@@ -3,7 +3,7 @@
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-A course project for **CS 6476 Computer Vision** at Georgia Tech, focusing on **Open-Vocabulary Object Detection and Visual Grounding** using Grounding DINO.
+A course project for **CS 310 Computer Vision** at Sustech, focusing on **Open-Vocabulary Object Detection and Visual Grounding** using Grounding DINO.
 
 ## Overview
 
