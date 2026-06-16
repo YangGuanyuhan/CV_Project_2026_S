@@ -179,3 +179,38 @@ All paths are configurable via `configs/grounding_dino.yaml` CLI overrides. No h
 1. Clone repo and run `bash scripts/setup_env.sh`
 2. Run `python scripts/download_weights.py` and `python scripts/download_coco.py`
 3. All outputs go to `outputs/` directory
+
+## Current Project Status
+
+- Project completion status: All stages complete
+- Final evaluation results:
+  - Full COCO val2017 (5000 images): AP=0.4055, AP50=0.5317
+  - Ablation experiments complete: threshold sensitivity, prompt format comparison
+  - Visualization complete: 10 success cases, 5 failure cases
+- Key findings:
+  - Threshold setting has significant impact (AP range 0.39-0.46)
+  - Dot-separated prompt format is essential
+  - Small object detection remains challenging (APS=0.259 vs APL=0.551)
+
+## Project Deliverables
+
+- Code: 5 modules under `src/` (models, datasets, engine, inference, utils)
+- Scripts: 7 CLI scripts (inference, eval, run_experiments, download_*, setup_*)
+- Tests: 22 unit tests all passing
+- Documentation: 3 stage reports + final report + 6 plan documents
+- Visualization: 6 report highlight figures + 15 case figures
+- Experiment results: Full val2017 evaluation + 6 ablation experiment groups
+
+## Key Metrics
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| AP | 0.4055 | Full COCO val2017 zero-shot |
+| AP50 | 0.5317 | IoU=0.5 threshold |
+| AP75 | 0.4422 | Stricter localization |
+| APS | 0.2587 | Small objects (<32^2) |
+| APM | 0.4328 | Medium objects (32^2-96^2) |
+| APL | 0.5510 | Large objects (>96^2) |
+| Box threshold | 0.35 | Default detection threshold |
+| Text threshold | 0.25 | Default text confidence |
+| Best AP (ablation) | 0.4637 | box_threshold=0.25 |

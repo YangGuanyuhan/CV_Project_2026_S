@@ -79,7 +79,7 @@ This stage analyzes Grounding DINO's behavior through controlled experiments:
 
 | Format | AP | AP50 | AP75 | APS | APM | APL | avg_boxes/image |
 |--------|------|------|------|------|------|------|-----------------|
-| dot-separated | 0.4382 | 0.5532 | 0.4793 | 0.2650 | 0.4759 | 0.6269 | 7.81 |
+| dot-separated | 0.4382 | 0.5532 | 0.4793 | 0.2650 | 0.4759 | 0.6269 | 7.72 |
 | comma-separated | 0.1671 | 0.2038 | 0.1859 | 0.0495 | 0.1741 | 0.2813 | 2.61 |
 | sentence-style | 0.1675 | 0.2051 | 0.1865 | 0.0626 | 0.1786 | 0.2587 | 2.49 |
 
