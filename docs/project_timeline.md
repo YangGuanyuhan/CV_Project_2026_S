@@ -16,7 +16,7 @@
 |--------|------|-------------------------|---------------------|
 | **A** | Model Architect | Backbone, Language Encoder, Fusion Modules, Model Integration | `src/models/`, `configs/` |
 | **B** | Data & Training Engineer | Dataset Loading, Data Augmentation, Training Pipeline, Training Scripts | `src/datasets/`, `src/engine/`, `scripts/` |
-| **C** | Evaluation & Documentation | Evaluator, Visualization, Testing, Documentation, CI/CD | `src/inference/`, `src/utils/`, `tests/`, `docs/`, `notebooks/` |
+| **C** | Evaluation & Documentation | Evaluator, Visualization, Documentation | `src/inference/`, `src/utils/`, `docs/`, `notebooks/` |
 
 ---
 
@@ -33,7 +33,6 @@
 | Study GroundingDINO official codebase | All | Code understanding document | ⬜ |
 | Download and prepare COCO dataset | B | Data ready | ⬜ |
 | Set up project directory structure | A | Repository skeleton complete | ✅ |
-| Configure pre-commit and CI | C | Code quality tools ready | ✅ |
 
 **Milestone**: All team members can run the official GroundingDINO demo
 
@@ -50,7 +49,6 @@
 | Implement Cross-Modal Fusion Module | A | `src/models/fusion/` | ⬜ |
 | Implement COCO Dataset Loader | B | `src/datasets/coco_dataset.py` | ⬜ |
 | Implement Data Augmentation Pipeline | B | `src/datasets/transforms.py` | ⬜ |
-| Write unit tests | C | `tests/` directory | ⬜ |
 | Set up training loop framework | B | `src/engine/trainer.py` | ⬜ |
 
 **Milestone**: Individual modules pass unit tests
@@ -91,41 +89,10 @@
 
 ---
 
-## Git Workflow
-
-### Branch Strategy
-
-```
-main                        # Stable release (merge only completed features)
-├── develop                 # Development mainline
-│   ├── feat/backbone       # A: Swin Transformer backbone
-│   ├── feat/language       # A: BERT language encoder
-│   ├── feat/fusion         # A: Cross-modal fusion
-│   ├── feat/dataset        # B: COCO dataset loader
-│   ├── feat/trainer        # B: Training pipeline
-│   ├── feat/evaluator      # C: Evaluation metrics
-│   ├── feat/visualizer     # C: Result visualization
-│   └── fix/xxx             # Bug fixes
-```
-
-### Commit Convention
-
-```
-feat(models): add Swin Transformer backbone
-fix(datasets): correct bounding box format in COCO loader
-docs(readme): update installation instructions
-refactor(engine): simplify training loop
-test(utils): add unit tests for box_ops
-chore: update requirements.txt
-```
-
----
-
 ## Communication
 
 - **Weekly Meeting**: Every [Day] at [Time]
 - **Communication Tool**: [Slack/Discord/WeChat]
-- **Code Review**: At least one approval required before merging
 
 ---
 
@@ -136,7 +103,6 @@ chore: update requirements.txt
 | CUDA/GPU issues | Use Google Colab or university cluster as backup |
 | Training too slow | Start with smaller model (Swin-T), reduce batch size |
 | Dataset download issues | Pre-download data to shared drive |
-| Merge conflicts | Regular pulls, small PRs, clear ownership |
 
 ---
 

@@ -51,25 +51,15 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Step 4: Install Pre-commit Hooks (Optional)
-
-```bash
-# Install pre-commit
-pip install pre-commit
-
-# Install git hooks
-pre-commit install
-```
-
-## Step 5: Download Data
+## Step 4: Download Data
 
 See [data/README.md](../data/README.md) for instructions on downloading the COCO dataset.
 
-## Step 6: Download Pre-trained Weights
+## Step 5: Download Pre-trained Weights
 
 See [checkpoints/README.md](../checkpoints/README.md) for instructions on downloading model weights.
 
-## Step 7: Verify Installation
+## Step 6: Verify Installation
 
 ```bash
 # Test imports
@@ -79,9 +69,6 @@ python -c "import transformers; print(f'Transformers: {transformers.__version__}
 
 # Test CUDA availability
 python -c "import torch; print(f'CUDA available: {torch.cuda.is_available()}')"
-
-# Run tests
-pytest tests/
 ```
 
 ## Troubleshooting
@@ -114,11 +101,8 @@ pip install --user -r requirements.txt
 Install recommended extensions:
 - Python
 - Pylance
-- Ruff
-- GitLens
 
 ### PyCharm
 
 1. Open project directory
 2. Configure Python interpreter to use the virtual environment
-3. Enable type checking

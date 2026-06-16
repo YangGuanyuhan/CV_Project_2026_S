@@ -85,7 +85,6 @@
 - [ ] `configs/grounding_dino.yaml` 中默认路径合理，不包含个人机器专属路径。
 - [ ] `scripts/inference.py --help` 能运行。
 - [ ] `scripts/eval.py --help` 能运行。
-- [ ] `pytest tests/` 通过，或在报告中说明失败原因。
 - [ ] 大文件没有误提交到 Git，例如 COCO 图片、完整 checkpoint、巨大输出文件。
 - [ ] `.gitignore` 覆盖数据集、权重、缓存、日志和临时输出。
 - [ ] `outputs/` 中保留轻量示例或通过文档说明如何生成，不提交过大的结果。

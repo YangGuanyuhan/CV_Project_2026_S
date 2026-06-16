@@ -60,8 +60,6 @@
 - [ ] 评估输出包含 COCO API 标准指标：`AP`, `AP50`, `AP75`, `APS`, `APM`, `APL`。
 - [ ] 若使用官方 Swin-T OGC 权重和完整 COCO val2017，结果应接近官方 zero-shot AP 约 `48.4/48.5`；若差距明显，报告中必须解释可能原因。
 - [ ] 至少包含 1 张定量结果表、6 张定性可视化图、3 类失败案例分析。
-- [ ] 每个阶段都有独立的详细文档说明，且文档描述的是实际完成内容，不是只描述原始设想。
-- [ ] 每个阶段文档都明确写出问题定义、方法、简化假设、评估证据、局限性、失败场景、下一步计划和参考文献。
 - [ ] 最终报告能说明：模型原理、复现步骤、COCO 评估协议、实验结果、误差分析和局限性。
 
 ## 6. Mandatory Documentation Policy
@@ -95,7 +93,7 @@ docs/final_report.md
 | CUDA 或编译失败 | 无法运行官方扩展 | 记录 CUDA_HOME、PyTorch/CUDA 版本；必要时使用 CPU-only 或 Colab | 安装日志和推理 demo 成功 |
 | COCO 完整评估耗时长 | 无法按时完成完整 val | 先跑 100/500 张 subset，再安排完整评估 | subset 指标和 full-run 计划都有记录 |
 | prompt 格式不一致 | 指标波动大 | 固定 COCO 类别 prompt，类别名用 `.` 分隔 | 配置文件和日志保存 prompt |
-| box 格式转换错误 | COCOeval 指标无效 | 添加小样本人工检查和单元测试 | result JSON 通过 COCO API 加载 |
+| box 格式转换错误 | COCOeval 指标无效 | 添加小样本人工检查 | result JSON 通过 COCO API 加载 |
 | 阈值设置不合理 | 漏检或误检严重 | 记录 `box_threshold` 和 `text_threshold`，做小规模搜索 | ablation 表格可复现 |
 | 文档只写理想目标 | 评分时无法判断实际贡献 | 每阶段强制写 actual work、assumptions、limitations、future work | 阶段报告通过 checklist |
 

@@ -139,8 +139,6 @@ CV_Project_2026_S/
 │   ├── download_coco.py       # Download COCO dataset
 │   ├── setup_env.sh           # Linux environment setup
 │   └── setup_env.ps1          # Windows environment setup
-├── tests/
-│   └── test_box_ops.py        # Unit tests for box operations
 ├── data/                      # Datasets (not tracked)
 ├── checkpoints/               # Model weights (not tracked)
 ├── outputs/                   # Results and visualizations
@@ -173,29 +171,6 @@ Regenerate them with:
 
 ```bash
 python scripts/generate_report_highlights.py
-```
-
-## Development
-
-### Running Tests
-
-```bash
-pytest tests/ -v
-```
-
-### Linting
-
-```bash
-ruff check .          # Check for issues
-ruff check --fix .    # Auto-fix issues
-ruff format .         # Format code
-```
-
-### Pre-commit Hooks
-
-```bash
-pre-commit install
-pre-commit run --all-files
 ```
 
 ## Team

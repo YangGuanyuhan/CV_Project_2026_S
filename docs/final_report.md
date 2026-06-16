@@ -210,13 +210,6 @@ The model shows a clear size-dependent performance gap:
 **Total Commits**: 13  
 **Total Lines of Code**: ~3,853 (source) + ~1,853 (documentation)
 
-#### Infrastructure & Setup (3 commits)
-- Initialized complete project structure with `src/`, `scripts/`, `configs/`, `tests/`, `docs/`
-- Created `pyproject.toml`, `requirements.txt`, `setup.py` for package management
-- Configured OmegaConf YAML configuration system (`configs/grounding_dino.yaml`)
-- Set up Ruff linting and pre-commit hooks
-- Removed GitHub Actions CI workflow in favor of local linting
-
 #### Core Implementation (4 commits)
 - **Model Wrapper** (`src/models/grounding_dino.py`, 182 lines): Wrapped official `groundingdino-py` package with project-specific API
 - **Inference Pipeline** (`src/inference/predictor.py`, 228 lines): High-level predictor for single/batch/directory inference
@@ -234,10 +227,6 @@ The model shows a clear size-dependent performance gap:
 - `scripts/download_weights.py` (118 lines): Model checkpoint download
 - `scripts/download_coco.py` (121 lines): COCO dataset download
 
-#### Testing (22 test cases)
-- `tests/test_box_ops.py`: 7 unit tests for bounding box operations
-- `tests/test_evaluator.py`: 15 unit tests for evaluation pipeline (category mapping, phrase matching, COCOeval params)
-
 #### Documentation (2 commits)
 - Updated `CLAUDE.md` with complete project state and usage instructions
 - Filled all stage reports (01/02/03) with actual experimental results
@@ -250,13 +239,6 @@ The model shows a clear size-dependent performance gap:
   - Threshold sensitivity: box_threshold [0.25, 0.35, 0.45]
   - Prompt format: [dot-separated, comma-separated, sentence-style]
 - Generated 21 visualization figures (10 success + 5 failure cases + 6 report highlights)
-
-#### Bug Fixes (2 commits)
-- Fixed NumPy `np.int` deprecation warnings
-- Fixed COCOeval imgIds restriction for subset evaluation
-- Fixed COCO category ID mapping (non-sequential IDs 1-90)
-- Fixed text_threshold default value (25 → 0.25)
-- Fixed transform API compatibility with groundingdino
 
 #### Key Results Achieved
 | Metric | Value | Dataset |
