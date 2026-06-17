@@ -15,6 +15,7 @@
 | [03_experiment_analysis_plan.md](03_experiment_analysis_plan.md) | 阈值、prompt、模型配置等实验与误差分析 | 实验表格、可视化案例、失败类型总结 |
 | [04_report_submission_plan.md](04_report_submission_plan.md) | 最终报告、演示材料与仓库交付检查 | 报告结构、结果复现说明、提交前 checklist |
 | [05_documentation_requirements.md](05_documentation_requirements.md) | 每个阶段必须完成的详细文档规范 | 阶段报告、假设说明、局限性、引用 |
+| [06_single_gpu_finetune_plan.md](06_single_gpu_finetune_plan.md) | 单卡微调实施方案（命令、耗时、排查） | 单卡可运行训练、短程微调结果、可复现实验记录 |
 
 ## Recommended Execution Order
 
