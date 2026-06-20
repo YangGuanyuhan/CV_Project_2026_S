@@ -1,0 +1,509 @@
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usepackage[UTF8,fontset=windows]{ctex}
+\usepackage{fontspec}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage{colortbl}
+\usepackage{listings}
+\usepackage{multirow}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{Blue}\bfseries,
+  commentstyle=\color{Muted}\itshape,
+  stringstyle=\color{Teal},
+  backgroundcolor=\color{Panel},
+  frame=single,
+  rulecolor=\color{Line},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  language=Python,
+  morekeywords={self, tf, np, None, True, False},
+}
+
+\setsansfont{Arial}
+\setCJKsansfont{Microsoft YaHei}
+\renewcommand{\familydefault}{\sfdefault}
+
+% ──────────────────────────────────────────────
+% Color Palette
+% ──────────────────────────────────────────────
+\definecolor{DeepNavy}{HTML}{172033}
+\definecolor{Ink}{HTML}{273142}
+\definecolor{Muted}{HTML}{667085}
+\definecolor{SoftBlue}{HTML}{EAF2FF}
+\definecolor{Blue}{HTML}{2F6FED}
+\definecolor{Teal}{HTML}{00A6A6}
+\definecolor{Orange}{HTML}{F59E0B}
+\definecolor{Red}{HTML}{D64545}
+\definecolor{Green}{HTML}{1F9D55}
+\definecolor{Panel}{HTML}{F6F8FB}
+\definecolor{Line}{HTML}{D8DEE9}
+
+% ──────────────────────────────────────────────
+% Beamer Theme
+% ──────────────────────────────────────────────
+\setbeamercolor{normal text}{fg=Ink,bg=white}
+\setbeamercolor{frametitle}{fg=DeepNavy,bg=white}
+\setbeamercolor{title}{fg=DeepNavy}
+\setbeamercolor{subtitle}{fg=Muted}
+\setbeamercolor{block title}{fg=DeepNavy,bg=Panel}
+\setbeamercolor{block body}{fg=Ink,bg=Panel}
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+\setbeamerfont{title}{size=\LARGE,series=\bfseries}
+\setbeamerfont{subtitle}{size=\large}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{Blue}\small$\blacktriangleright$}
+\setbeamertemplate{itemize subitem}{\color{Teal}\scriptsize$\bullet$}
+\setbeamertemplate{enumerate item}{\color{Blue}\insertenumlabel.}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+% Frametitle with SUSTech logo
+\setbeamertemplate{frametitle}{
+  \vspace{0.10cm}
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=north east] at ($(current page.north east)+(-0.50cm,-0.18cm)$)
+      {\includegraphics[height=0.80cm]{figures/Sustech.png}};
+  \end{tikzpicture}
+  \begin{minipage}[t]{0.76\linewidth}
+    \insertframetitle
+  \end{minipage}
+  \vspace{0.02cm}
+  \par\textcolor{Line}{\rule{\linewidth}{0.65pt}}
+}
+
+% Footline
+\setbeamertemplate{footline}{
+  \leavevmode
+  \hbox{
+    \begin{beamercolorbox}[wd=.70\paperwidth,ht=2.6ex,dp=1.1ex,leftskip=0.55cm]{author in head/foot}
+      \scriptsize\textcolor{Muted}{Reproducing Grounding DINO | CS308 Computer Vision | SUSTech}
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[wd=.30\paperwidth,ht=2.6ex,dp=1.1ex,rightskip=0.55cm plus1fil]{date in head/foot}
+      \scriptsize\hfill\textcolor{Muted}{\insertframenumber/\inserttotalframenumber}
+    \end{beamercolorbox}
+  }
+}
+
+% ──────────────────────────────────────────────
+% Custom Commands
+% ──────────────────────────────────────────────
+\newcommand{\tagbox}[2]{%
+  \begin{tikzpicture}[baseline=(n.base)]
+    \node[rounded corners=2pt, draw=#1!65, fill=#1!10, inner xsep=4pt, inner ysep=2pt, font=\scriptsize] (n) {#2};
+  \end{tikzpicture}%
+}
+\newcommand{\metric}[3]{%
+  \begin{tikzpicture}
+    \node[rounded corners=4pt, fill=#1!10, draw=#1!55, minimum width=2.4cm, minimum height=1.1cm, align=center] {
+      {\Large\bfseries #2}\\[-1pt]{\scriptsize #3}
+    };
+  \end{tikzpicture}%
+}
+\newcommand{\smallnote}[1]{{\scriptsize\textcolor{Muted}{#1}}}
+
+% Placeholder slide macro
+\newcommand{\placeholderslide}[1]{%
+  \begin{frame}{#1}
+    \centering
+    \vspace{3cm}
+    {\Large\textcolor{Muted}{[To be completed by other team members]}}
+    \vspace{0.5cm}
+
+    \smallnote{This slide is a placeholder — content to be added by the responsible team member.}
+  \end{frame}
+}
+
+% ══════════════════════════════════════════════
+% Title Info
+% ══════════════════════════════════════════════
+\title{复现 Grounding DINO：\\开放词汇目标检测与视觉定位}
+\subtitle{Reproducing Grounding DINO: Open-Vocabulary Object Detection \\ and Visual Grounding on COCO 2017}
+\author{苏思齐 (12310645) \quad 杨官宇涵 (12313614) \quad 莫丰源 (12311805)}
+\institute{南方科技大学 (SUSTech)，深圳}
+\date{\today}
+
+\begin{document}
+
+% ══════════════════════════════════════════════
+% Title Page
+% ══════════════════════════════════════════════
+{
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+\setbeamercolor{title}{fg=DeepNavy,bg=}
+\setbeamercolor{subtitle}{fg=Muted,bg=}
+\setbeamercolor{author}{fg=Ink,bg=}
+\setbeamercolor{institute}{fg=Muted,bg=}
+\setbeamercolor{date}{fg=Muted,bg=}
+\setbeamerfont{title}{size=\Huge,series=\bfseries}
+\setbeamerfont{subtitle}{size=\Large}
+\setbeamerfont{author}{size=\footnotesize}
+\setbeamerfont{institute}{size=\normalsize}
+\usebackgroundtemplate{%
+  \begin{tikzpicture}
+    \node at (0.5\paperwidth,0.5\paperheight) {\includegraphics[width=\paperwidth, height=\paperheight]{figures/background.png}};
+    \fill[white,opacity=0.55] (0,0) rectangle (\paperwidth,\paperheight);
+  \end{tikzpicture}%
+}
+\begin{frame}[plain]
+  \vspace{0.6cm}
+  \titlepage
+  \vspace{-0.8cm}
+  \begin{flushright}
+    \includegraphics[height=1.25cm]{figures/Sustech.png}\hspace{0.4cm}
+  \end{flushright}
+\end{frame}
+}
+
+% ══════════════════════════════════════════════
+% Outline
+% ══════════════════════════════════════════════
+\begin{frame}{提纲 (Outline)}
+  \tableofcontents[subsectionstyle=show]
+\end{frame}
+
+% ══════════════════════════════════════════════
+\section{Introduction}
+% ══════════════════════════════════════════════
+\placeholderslide{1. Introduction}
+
+% ══════════════════════════════════════════════
+\section{Related Works}
+% ══════════════════════════════════════════════
+\placeholderslide{2. Related Works}
+
+% ══════════════════════════════════════════════
+\section{Method}
+% ══════════════════════════════════════════════
+
+\begin{frame}{3. Method — Model Architecture Overview}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    We reproduce the Grounding DINO inference pipeline using the official
+    \texttt{groundingdino-py} package (Liu et al., ECCV 2024) without modifying the model
+    architecture. Our work focuses on wrapping the official implementation with a
+    modular Python interface for configurable inference, evaluation, and visualization.
+
+    \vspace{0.15cm}
+    \begin{block}{Scope \& Assumptions}
+      \scriptsize
+      \begin{itemize}
+        \item Zero-shot only — no fine-tuning on COCO
+        \item Fixed confidence thresholds
+        \item Canonical COCO category names
+        \item Single-scale inference (no test-time augmentation)
+      \end{itemize}
+    \end{block}
+
+    \column{0.50\textwidth}
+    \begin{block}{Three Core Components}
+      \scriptsize
+      \begin{enumerate}\setlength{\itemsep}{4pt}
+        \item \textbf{Swin Transformer backbone} (Liu et al., ICCV 2021):\\
+              Hierarchical visual features through 4 stages (stride $4/8/16/32$).\\
+              Shifted-window attention — $O(N)$ complexity.\\
+              Config: window=7, embed\_dim=96, depths=[2,2,6,2].
+        \item \textbf{BERT language encoder} (Devlin et al., NAACL 2019):\\
+              bert-base-uncased — 12 layers, hidden=768, vocab=30,522.\\
+              Bidirectional self-attention for contextualized token embeddings.
+        \item \textbf{Deformable attention fusion}:\\
+              6 cross-modal layers, 8 heads each, 256-dim features.\\
+              900 object queries $\times$ visual locations $\times$ text tokens.
+      \end{enumerate}
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{3. Method — Inference Pipeline}
+  \textbf{Stage-by-stage data flow from inputs to COCO-format detections:}
+
+  \vspace{0.2cm}
+  \begin{enumerate}\setlength{\itemsep}{6pt}
+    \item \textbf{Model Loading}\\
+          \texttt{GroundingDINOModel} class wraps \texttt{load\_model()} from
+          \texttt{groundingdino-py}. Validates checkpoint (662 MB) and config file,
+          detects CUDA/CPU device, exposes \texttt{@torch.no\_grad()} predict method.
+
+    \item \textbf{Image Preprocessing}\\
+          BGR $\rightarrow$ RGB (OpenCV $\rightarrow$ PIL convention).\\
+          Resize: \texttt{RandomResize([800], max\_size=1333)} — shorter side to 800px,
+          longer side constrained to $\le$ 1333px.\\
+          Normalize: ImageNet stats (mean $=[0.485,0.456,0.406]$,
+          std $=[0.229,0.224,0.225]$), HWC $\rightarrow$ CHW tensor.
+
+    \item \textbf{Text Encoding \& Cross-Modal Fusion}\\
+          BERT WordPiece tokenizer $\rightarrow$ $(1, L)$ input IDs + attention mask
+          ($L \le 256$).\\
+          Swin-T extracts multi-scale features $\oplus$ BERT produces $(1, L, 768)$
+          embeddings.\\
+          6 deformable fusion layers $\rightarrow$ each of 900 queries outputs
+          $(cx,cy,w,h)_{\text{norm}}$, confidence $s$, phrase index.
+
+    \item \textbf{Postprocessing}\\
+          $(cx,cy,w,h)_{\text{norm}} \xrightarrow{\text{box\_cxcywh\_to\_xyxy}}
+          (x_1,y_1,x_2,y_2)_{\text{pixel}} \xrightarrow{} (x,y,w,h)_{\text{COCO}}$.\\
+          Filter: box\_threshold=0.35, text\_threshold=0.25 (default).\\
+          Clamp boxes to image boundaries; discard degenerate boxes ($w \le 0$ or $h \le 0$).
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{3. Method — Prompt Design \& Phrase-to-Category Mapping}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \begin{block}{Dot-Separated Prompt Format (Liu et al., ECCV 2024)}
+      \small
+      Enumerate all 80 COCO categories separated by \texttt{ . } (space-dot-space):
+      \vspace{2pt}
+      \begin{center}
+        \texttt{"person . bicycle . car . motorcycle . airplane . bus . \ldots . toothbrush ."}
+      \end{center}
+      \vspace{2pt}
+      \textbf{Why dot-separated?} BERT WordPiece tokenizer treats the period
+      surrounded by spaces as an independent separator token, creating clear
+      boundaries between adjacent category names. This prevents the tokenizer from
+      merging category names into ambiguous subword units — a failure mode that
+      occurs with comma-separated or sentence-style formats.
+    \end{block}
+
+    \column{0.43\textwidth}
+    \begin{block}{Three-Layer Matching Strategy}
+      \scriptsize
+      \texttt{src/datasets/coco\_categories.py} maps each detected phrase to a
+      COCO category ID (1--90):
+      \begin{enumerate}\setlength{\itemsep}{4pt}
+        \item \textbf{Exact match}: case-insensitive string equality
+        \item \textbf{Substring match}: phrase $\subset$ category or vice versa\\
+              (e.g., ``dining'' $\rightarrow$ ``dining table'')
+        \item \textbf{Alias match}: manually curated dictionary of 21 aliases\\
+              (e.g., ``tv''/``television'' $\rightarrow$ ``tv'', ``sofa'' $\rightarrow$ ``couch'')
+      \end{enumerate}
+      \vspace{3pt}
+      Phrases failing all three layers ($\sim$2--5\%) are discarded.
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{3. Method — Software Architecture}
+  \begin{columns}[T]
+    \column{0.52\textwidth}
+    \begin{table}
+      \centering
+      \small
+      \renewcommand{\arraystretch}{1.15}
+      \begin{tabular}{llr}
+        \toprule
+        \textbf{Module} & \textbf{Responsibility} & \textbf{LOC} \\
+        \midrule
+        \texttt{src/models/grounding\_dino.py} & Model wrapper & 182 \\
+        \texttt{src/inference/predictor.py} & High-level inference API & 229 \\
+        \texttt{src/inference/visualizer.py} & Detection box drawing & 262 \\
+        \texttt{src/inference/coco\_visualizer.py} & COCO GT+pred comparison & 213 \\
+        \texttt{src/engine/evaluator.py} & COCOeval integration & 368 \\
+        \texttt{src/datasets/coco\_categories.py} & Category mapping \& prompts & 269 \\
+        \texttt{src/datasets/coco\_dataset.py} & Dataset utilities & 188 \\
+        \texttt{src/utils/box\_ops.py} & IoU, NMS, coordinate ops & 115 \\
+        \midrule
+        \textbf{Total} & & \textbf{1,826} \\
+        \bottomrule
+      \end{tabular}
+    \end{table}
+
+    \column{0.46\textwidth}
+    \begin{block}{Design Principles}
+      \small
+      \begin{itemize}
+        \item \textbf{Config-driven}: OmegaConf YAML, all paths/params overridable via CLI
+        \item \textbf{Modular}: 5 source modules + 10 CLI scripts
+        \item \textbf{Robust}: per-image try/except — individual failures don't interrupt batch
+        \item \textbf{Multi-format output}: predictions.json + metrics.json + eval.log + phrase\_mapping.json
+      \end{itemize}
+    \end{block}
+
+    \vspace{0.15cm}
+    \begin{block}{10 CLI Scripts}
+      \scriptsize
+      inference.py | eval.py | run\_experiments.py | generate\_report\_highlights.py | generate\_visualizations.py | download\_weights.py | download\_coco.py | train.py | setup\_env.sh | setup\_env.ps1
+    \end{block}
+  \end{columns}
+\end{frame}
+
+% ══════════════════════════════════════════════
+\section{Experiments}
+\subsection{4.1 Datasets}
+% ══════════════════════════════════════════════
+
+\begin{frame}{4.1 Datasets — COCO 2017 Validation Set}
+  \begin{columns}[T]
+    \column{0.50\textwidth}
+    \begin{block}{Dataset Overview (Lin et al., ECCV 2014)}
+      \small
+      \textbf{COCO 2017 validation set} (Common Objects in Context):
+      \begin{itemize}\setlength{\itemsep}{3pt}
+        \item \textbf{Images}: 5,000 RGB images from diverse real-world scenes (indoor, outdoor, street views, crowded spaces)
+        \item \textbf{Categories}: 80 common object classes (person, bicycle, car, dog, chair, \ldots)
+        \item \textbf{Annotations}: 36,781 ground-truth bounding boxes in $[x, y, w, h]$ format, averaging $\sim$7.4 per image
+        \item \textbf{Resolution}: Varying from $\sim$480$\times$640 to full HD
+      \end{itemize}
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{block}{Key Characteristics}
+      \small
+      \begin{itemize}\setlength{\itemsep}{3pt}
+        \item \textbf{Long-tail distribution}: frequent classes (``person'', $\sim$262K training instances) coexist with rare classes (``hair drier'', $<$100 instances)
+        \item \textbf{Category IDs}: Non-consecutive 1--90 with gaps
+        \item \textbf{Annotation format}: COCO $[x, y, \text{width}, \text{height}]$ coordinate system
+        \item \textbf{For ablation}: Fixed 500-image subset selected with random seed 42 for reproducibility
+      \end{itemize}
+    \end{block}
+
+    \vspace{0.1cm}
+    \begin{block}{Dataset Splits}
+      \scriptsize
+      \renewcommand{\arraystretch}{1.2}
+      \begin{tabular}{lccc}
+        \toprule
+        \textbf{Split} & \textbf{Images} & \textbf{Annotations} & \textbf{Usage} \\
+        \midrule
+        train2017 & 118,287 & $\sim$860K & Model training / fine-tuning \\
+        \textbf{val2017} & \textbf{5,000} & \textbf{36,781} & \textbf{Evaluation (this project)} \\
+        test2017 & 40,670 & — & Official benchmark (no public GT) \\
+        \bottomrule
+      \end{tabular}
+    \end{block}
+  \end{columns}
+\end{frame}
+
+% ─ Placeholder slides for sections other members are responsible for ─
+\subsection{4.2 Implementation Details}
+\placeholderslide{4.2 Implementation Details}
+\subsection{4.3 Metrics}
+\placeholderslide{4.3 Metrics}
+\subsection{4.4 Experimental Design \& Results}
+\placeholderslide{4.4 Experimental Design \& Results}
+
+% ══════════════════════════════════════════════
+\section{Conclusion}
+% ══════════════════════════════════════════════
+
+\begin{frame}{5. Conclusion}
+  \begin{columns}[T]
+    \column{0.55\textwidth}
+    \begin{block}{Problem \& Approach}
+      \small
+      \textbf{Challenge}: Open-vocabulary object detection — detecting arbitrary
+      text-described categories without task-specific training data.
+
+      \vspace{3pt}
+      \textbf{Method}: Reproduced Grounding DINO (Liu et al., ECCV 2024) using the official
+      \texttt{groundingdino-py} inference backend with Swin-Tiny backbone in a
+      zero-shot setting on COCO 2017 val2017.
+
+      \vspace{3pt}
+      \textbf{Key configuration}:
+      \begin{itemize}\setlength{\itemsep}{1pt}\scriptsize
+        \item Config-driven pipeline (OmegaConf YAML + CLI overrides)
+        \item Dot-separated prompt format (all 80 COCO categories)
+        \item box\_threshold=0.35, text\_threshold=0.25 (default)
+        \item Single-scale inference, no fine-tuning
+      \end{itemize}
+    \end{block}
+
+    \column{0.43\textwidth}
+    \begin{block}{Core Findings}
+      \small
+      \begin{enumerate}\setlength{\itemsep}{4pt}
+        \item Grounding DINO achieves viable zero-shot performance on COCO without task-specific training
+        \item Threshold selection significantly impacts the precision-recall tradeoff
+        \item Dot-separated prompt format is a \textbf{functional requirement} — alternative formats degrade severely
+        \item Small-object detection remains the primary bottleneck (resolution constraint from Swin-T backbone)
+        \item Localization quality lags behind recognition capability
+      \end{enumerate}
+    \end{block}
+  \end{columns}
+
+  \vspace{0.2cm}
+  \begin{tikzpicture}
+    \node[rounded corners=4pt, fill=Blue!8, draw=Blue!45, text width=14cm, inner sep=7pt, font=\small] {
+      \textbf{Summary:} Grounding DINO demonstrates that open-vocabulary detection is feasible in a zero-shot setting.
+      The modular, config-driven pipeline enables rapid experimentation and serves as a solid foundation for
+      future extensions such as fine-tuning, cross-dataset evaluation, and deployment optimization.
+    };
+  \end{tikzpicture}
+\end{frame}
+
+% ══════════════════════════════════════════════
+\section{References}
+% ══════════════════════════════════════════════
+
+\begin{frame}{References}
+  \footnotesize
+  \renewcommand{\arraystretch}{1.5}
+  \begin{enumerate}\setlength{\itemsep}{3pt}
+    \item \textbf{Grounding DINO}: S. Liu et al., ``Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set Object Detection,'' \textit{ECCV}, 2024.
+    \item \textbf{DINO}: H. Zhang et al., ``DINO: DETR with Improved DeNoising Anchor Boxes for End-to-End Object Detection,'' \textit{ICLR}, 2023.
+    \item \textbf{DETR}: N. Carion et al., ``End-to-End Object Detection with Transformers,'' \textit{ECCV}, 2020.
+    \item \textbf{Deformable DETR}: X. Zhu et al., ``Deformable DETR: Deformable Transformers for End-to-End Object Detection,'' \textit{ICLR}, 2021.
+    \item \textbf{Swin Transformer}: Z. Liu et al., ``Swin Transformer: Hierarchical Vision Transformer using Shifted Windows,'' \textit{ICCV}, 2021.
+    \item \textbf{BERT}: J. Devlin et al., ``BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding,'' \textit{NAACL}, 2019.
+    \item \textbf{GLIP}: L. H. Li et al., ``Grounded Language-Image Pre-training,'' \textit{CVPR}, 2022.
+    \item \textbf{OWL-ViT}: M. Minderer et al., ``Simple Open-Vocabulary Object Detection with Vision Transformers,'' \textit{ECCV}, 2022.
+    \item \textbf{YOLO-World}: T. Cheng et al., ``YOLO-World: Real-Time Open-Vocabulary Object Detection,'' \textit{CVPR}, 2024.
+    \item \textbf{COCO}: T.-Y. Lin et al., ``Microsoft COCO: Common Objects in Context,'' \textit{ECCV}, 2014.
+    \item \textbf{CLIP}: A. Radford et al., ``Learning Transferable Visual Models From Natural Language Supervision,'' \textit{ICML}, 2021.
+  \end{enumerate}
+\end{frame}
+
+% ══════════════════════════════════════════════
+\section{Contributions}
+% ══════════════════════════════════════════════
+
+\begin{frame}{Contributions}
+  \begin{columns}[T]
+    \column{0.32\textwidth}
+    \begin{block}{苏思齐 (12310645)}
+      \scriptsize
+      \begin{itemize}\setlength{\itemsep}{2pt}
+        \item [To be completed]
+        \item [To be completed]
+        \item [To be completed]
+      \end{itemize}
+    \end{block}
+
+    \column{0.36\textwidth}
+    \begin{block}{杨官宇涵 (12313614)}
+      \scriptsize
+      \begin{itemize}\setlength{\itemsep}{2pt}
+        \item 整体项目设计与实现
+        \item 全部 Python 模块与 CLI 脚本编写
+        \item 完整 COCO 评估与消融实验执行
+        \item 报告撰写
+      \end{itemize}
+    \end{block}
+
+    \column{0.30\textwidth}
+    \begin{block}{莫丰源 (12311805)}
+      \scriptsize
+      \begin{itemize}\setlength{\itemsep}{2pt}
+        \item [To be completed]
+        \item [To be completed]
+        \item [To be completed]
+      \end{itemize}
+    \end{block}
+  \end{columns}
+
+  \vspace{0.5cm}
+  \centering
+  \Large\textbf{Thank You!} \quad \normalsize Q \& A
+\end{frame}
+
+\end{document}

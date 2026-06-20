@@ -1,9 +1,9 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\providecommand\HyField@AuxAddToFields[1]{}
-\providecommand\HyField@AuxAddToCoFields[2]{}
+\providecommand*\HyPL@Entry[1]{}
 \citation{Radford21}
 \citation{Liu23}
+\HyPL@Entry{0<</S/D>>}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{section.1}\protected@file@percent }
 \citation{Carion20}
 \citation{Zhu21}
@@ -18,14 +18,12 @@
 \citation{Minderer22}
 \citation{Liu23}
 \citation{Cheng24}
-\citation{Li22}
 \@writefile{toc}{\contentsline {section}{\numberline {II}Related Works}{2}{section.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}DETR and DINO: Foundations}{2}{subsection.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Grounding DINO}{2}{subsection.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Backbone Architectures}{2}{subsection.2.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-D}}Related Open-Vocabulary Detectors}{2}{subsection.2.4}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Comparison of Open-Vocabulary Object Detectors}}{2}{table.1}\protected@file@percent }
-\newlabel{tab:ovd_comparison}{{I}{2}{Comparison of Open-Vocabulary Object Detectors}{table.1}{}}
+\citation{Li22}
 \citation{Minderer22}
 \citation{Cheng24}
 \citation{Lin14}
@@ -34,14 +32,16 @@
 \citation{Devlin19}
 \citation{Liu21}
 \citation{Devlin19}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Comparison of Open-Vocabulary Object Detectors}}{3}{table.1}\protected@file@percent }
+\newlabel{tab:ovd_comparison}{{I}{3}{Comparison of Open-Vocabulary Object Detectors}{table.1}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-E}}COCO Benchmark}{3}{subsection.2.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {III}Method}{3}{section.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Model Configuration}{3}{subsection.3.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Complete Grounding DINO Model Specification}}{3}{table.2}\protected@file@percent }
 \newlabel{tab:config}{{II}{3}{Complete Grounding DINO Model Specification}{table.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Inference Pipeline}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}1}Stage 1: Model Loading}{3}{subsubsection.3.2.1}\protected@file@percent }
 \citation{Liu23}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Inference Pipeline}{4}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}1}Stage 1: Model Loading}{4}{subsubsection.3.2.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}2}Stage 2: Image Preprocessing}{4}{subsubsection.3.2.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}3}Stage 3: Text Encoding and Cross-Modal Fusion}{4}{subsubsection.3.2.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {III-B}4}Stage 4: Postprocessing}{4}{subsubsection.3.2.4}\protected@file@percent }
@@ -64,9 +64,9 @@
 \newlabel{tab:main_results}{{V}{6}{Full COCO val2017 Evaluation Results (5,000 images)}{table.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Full COCO metrics overview: AP, AP50, AP75, and per-size breakdown.}}{6}{figure.1}\protected@file@percent }
 \newlabel{fig:metrics_overview}{{1}{6}{Full COCO metrics overview: AP, AP50, AP75, and per-size breakdown}{figure.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Small, medium, and large object AP gap.}}{6}{figure.2}\protected@file@percent }
-\newlabel{fig:size_gap}{{2}{6}{Small, medium, and large object AP gap}{figure.2}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}2}Ablation: Threshold Sensitivity}{6}{subsubsection.4.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Small, medium, and large object AP gap.}}{7}{figure.2}\protected@file@percent }
+\newlabel{fig:size_gap}{{2}{7}{Small, medium, and large object AP gap}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}2}Ablation: Threshold Sensitivity}{7}{subsubsection.4.4.2}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Threshold Sensitivity — Complete Metrics (Subset 500 Images)}}{7}{table.6}\protected@file@percent }
 \newlabel{tab:threshold}{{VI}{7}{Threshold Sensitivity — Complete Metrics (Subset 500 Images)}{table.6}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Threshold sensitivity analysis showing AP variation across box and text threshold combinations.}}{7}{figure.3}\protected@file@percent }
@@ -74,31 +74,35 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}3}Ablation: Prompt Format}{7}{subsubsection.4.4.3}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {VII}{\ignorespaces Prompt Format Comparison — Complete Metrics (Subset 500 Images)}}{7}{table.7}\protected@file@percent }
 \newlabel{tab:prompt}{{VII}{7}{Prompt Format Comparison — Complete Metrics (Subset 500 Images)}{table.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Prompt format comparison: dot-separated, comma-separated, and sentence-style formats.}}{7}{figure.4}\protected@file@percent }
-\newlabel{fig:prompt}{{4}{7}{Prompt format comparison: dot-separated, comma-separated, and sentence-style formats}{figure.4}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}4}Qualitative Analysis}{7}{subsubsection.4.4.4}\protected@file@percent }
-\citation{Liu23}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Prompt format comparison: dot-separated, comma-separated, and sentence-style formats.}}{8}{figure.4}\protected@file@percent }
+\newlabel{fig:prompt}{{4}{8}{Prompt format comparison: dot-separated, comma-separated, and sentence-style formats}{figure.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-D}4}Qualitative Analysis}{8}{subsubsection.4.4.4}\protected@file@percent }
 \@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Success case examples: accurate detections with correct categories and tight bounding boxes for medium and large objects across diverse scene types.}}{8}{figure.5}\protected@file@percent }
 \newlabel{fig:success}{{5}{8}{Success case examples: accurate detections with correct categories and tight bounding boxes for medium and large objects across diverse scene types}{figure.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Failure case examples showing the three dominant error modes: small object misses (top row), crowded-scene confusion (middle row), and occlusion-related localization errors (bottom row).}}{8}{figure.6}\protected@file@percent }
 \newlabel{fig:failure}{{6}{8}{Failure case examples showing the three dominant error modes: small object misses (top row), crowded-scene confusion (middle row), and occlusion-related localization errors (bottom row)}{figure.6}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {VIII}{\ignorespaces Error Taxonomy with Experimental Evidence}}{8}{table.8}\protected@file@percent }
 \newlabel{tab:errors}{{VIII}{8}{Error Taxonomy with Experimental Evidence}{table.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{8}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Comparison with Reported Benchmarks}{8}{subsection.5.1}\protected@file@percent }
-\citation{Cheng24}
+\citation{Liu23}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{9}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Comparison with Reported Benchmarks}{9}{subsection.5.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Zero-Shot vs. Fine-Tuned Performance}{9}{subsection.5.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Limitations Analysis}{9}{subsection.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Future Work Directions}{9}{subsection.5.4}\protected@file@percent }
+\citation{Cheng24}
 \citation{Li22}
 \citation{Minderer22}
 \citation{Cheng24}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Future Work Directions}{10}{subsection.5.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Reproducibility Considerations}{10}{subsection.5.5}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Interactive Demo Interface}{10}{subsection.5.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Practical Deployment Considerations}{10}{subsection.5.7}\protected@file@percent }
 \bibstyle{IEEEtran}
 \bibdata{sample}
 \bibcite{Radford21}{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Practical Deployment Considerations}{11}{subsection.5.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{11}{section.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Key Findings Summary}}{11}{table.9}\protected@file@percent }
+\newlabel{tab:key_findings}{{IX}{11}{Key Findings Summary}{table.9}{}}
+\@writefile{toc}{\contentsline {section}{References}{11}{section*.1}\protected@file@percent }
 \bibcite{Liu23}{2}
 \bibcite{Carion20}{3}
 \bibcite{Zhu21}{4}
@@ -109,12 +113,8 @@
 \bibcite{Minderer22}{9}
 \bibcite{Cheng24}{10}
 \bibcite{Lin14}{11}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{11}{section.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {IX}{\ignorespaces Key Findings Summary}}{11}{table.9}\protected@file@percent }
-\newlabel{tab:key_findings}{{IX}{11}{Key Findings Summary}{table.9}{}}
-\@writefile{toc}{\contentsline {section}{References}{11}{section*.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Reproduction Commands}{11}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-A}}Environment Setup}{11}{subsection.Appendix.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Reproduction Commands}{12}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-A}}Environment Setup}{12}{subsection.Appendix.A.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-B}}Data and Model Download}{12}{subsection.Appendix.A.2}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-C}}Single-Image Inference}{12}{subsection.Appendix.A.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-D}}Full COCO val2017 Evaluation}{12}{subsection.Appendix.A.4}\protected@file@percent }
