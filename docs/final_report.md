@@ -30,7 +30,7 @@ Grounding DINO (Liu et al., 2023) extends the DINO detector with grounded pre-tr
 
 - **GLIP** (Li et al., 2022): Grounded language-image pre-training
 - **OWL-ViT** (Minderer et al., 2022): Open-world localization with Vision Transformers
-- **YOLO-World** (Tian et al., 2024): Real-time open-vocabulary detection
+- **YOLO-World** (Cheng et al., 2024): Real-time open-vocabulary detection
 
 ## 3. Method Reproduction
 
