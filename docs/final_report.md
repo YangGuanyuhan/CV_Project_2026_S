@@ -2,6 +2,9 @@
 
 > Georgia Tech CS 6476 Computer Vision — Spring 2026
 
+> **📂 本项目所有代码、实验配置、可视化结果及文档均托管在 GitHub：**
+> 🔗 **[https://github.com/YangGuanyuhan/CV_Project_2026_S](https://github.com/YangGuanyuhan/CV_Project_2026_S)**
+
 ## 1. Introduction
 
 ### Problem Definition

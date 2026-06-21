@@ -21,12 +21,6 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
-\bibitem{Radford21}
-A.~Radford, J.~W. Kim, C.~Hallacy, A.~Ramesh, G.~Goh, S.~Agarwal, G.~Sastry,
-  A.~Askell, P.~Mishkin, J.~Clark, G.~Krueger, and I.~Sutskever, ``Learning
-  transferable visual models from natural language supervision,'' in
-  \emph{International Conference on Machine Learning (ICML)}, 2021.
-
 \bibitem{Liu23}
 S.~Liu, Z.~Zeng, T.~Ren, F.~Li, H.~Zhang, J.~Yang, Q.~Jiang, C.~Li, J.~Yang,
   H.~Su, J.~Zhu, and L.~Zhang, ``Grounding {DINO}: Marrying {DINO} with
