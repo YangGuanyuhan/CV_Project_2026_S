@@ -173,13 +173,98 @@
   \tableofcontents[subsectionstyle=show]
 \end{frame}
 
-% ═══════════ §1 Introduction (placeholder) ═══════════
+% ═══════════ §1 Introduction ═══════════
 \section{Introduction}
-\placeholderslide{1. Introduction}
+\begin{frame}{1. Introduction}
+  \begin{columns}[T]
+    \column{0.54\textwidth}
+    \begin{block}{Task Background}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{4pt}
+        \item \textbf{Open-vocabulary object detection} localizes objects described by arbitrary text, rather than a fixed training label set.
+        \item \textbf{Visual grounding} further connects natural-language expressions to image regions, e.g., ``the red car on the left''.
+        \item The task combines object recognition, localization, and language understanding in one pipeline.
+      \end{itemize}
+    \end{block}
 
-% ═══════════ §2 Related Works (placeholder) ═══════════
+    \vspace{0.1cm}
+    \begin{block}{Main Challenges}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{3pt}
+        \item Aligning visual regions with free-form text prompts
+        \item Generalizing to categories not explicitly fixed in the detector head
+        \item Balancing recall and precision through prompt and threshold design
+        \item Detecting small or occluded objects in complex real-world scenes
+      \end{itemize}
+    \end{block}
+
+    \column{0.43\textwidth}
+    \begin{block}{Our Project}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{4pt}
+        \item Reproduce a Grounding DINO detection pipeline
+        \item Evaluate on COCO-style detection metrics
+        \item Analyze prompt format and threshold behavior
+        \item Build a demo for image upload, text prompt input, and visualized detections
+      \end{itemize}
+    \end{block}
+
+    \vspace{0.15cm}
+    \centering
+    \metric{Blue}{0.559}{Best mAP}
+    \hspace{0.15cm}
+    \metric{Teal}{0.735}{Best AP50}
+    \vspace{0.12cm}
+
+    \metric{Orange}{5}{Best Epoch}
+    \hspace{0.15cm}
+    \metric{Green}{0.712}{AP$_l$}
+
+    \vspace{0.1cm}
+    \smallnote{Best recorded checkpoint in the 6-epoch run: epoch 5.}
+  \end{columns}
+\end{frame}
+
+% ═══════════ §2 Related Works ═══════════
 \section{Related Works}
-\placeholderslide{2. Related Works}
+\begin{frame}{2. Related Works}
+  \begin{columns}[T]
+    \column{0.48\textwidth}
+    \begin{block}{Detection Transformers}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{4pt}
+        \item \textbf{DETR} formulates object detection as end-to-end set prediction with transformers.
+        \item \textbf{Deformable DETR} improves convergence by attending to sparse multi-scale feature locations.
+        \item \textbf{DINO} further strengthens DETR-style detection with denoising training and better query initialization.
+      \end{itemize}
+    \end{block}
+
+    \vspace{0.1cm}
+    \begin{block}{Vision-Language Pre-training}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{4pt}
+        \item \textbf{CLIP} learns transferable image-text representations from large-scale natural-language supervision.
+        \item \textbf{BERT} provides contextual token embeddings for phrase-level language understanding.
+      \end{itemize}
+    \end{block}
+
+    \column{0.50\textwidth}
+    \begin{block}{Open-Vocabulary Detection and Grounding}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{4pt}
+        \item \textbf{GLIP} unifies object detection and phrase grounding through grounded language-image pre-training.
+        \item \textbf{OWL-ViT} adapts vision transformers for open-vocabulary localization with text queries.
+        \item \textbf{YOLO-World} targets real-time open-vocabulary detection with efficient prompt-aware prediction.
+      \end{itemize}
+    \end{block}
+
+    \vspace{0.1cm}
+    \begin{block}{Why Grounding DINO}
+      \footnotesize
+      Grounding DINO marries DINO-style detection with grounded pre-training, using a Swin visual backbone, a BERT text encoder, and cross-modal fusion. It directly supports text-prompted boxes, which matches our reproduction and demo goals.
+    \end{block}
+  \end{columns}
+\end{frame}
 
 % ══════════════════════════════════════════════
 \section{Method}
@@ -402,11 +487,260 @@
 
 % ─ Placeholders ─
 \subsection{4.2 Implementation Details}
-\placeholderslide{4.2 Implementation Details}
+
+\begin{frame}{4.2 Implementation Details}
+\small
+\begin{itemize}
+    \item \textbf{Model:} Grounding DINO with Swin-T backbone.
+    \item \textbf{Framework:} PyTorch + MMDetection + MMEngine.
+    \item \textbf{Initialization:} official Grounding DINO Swin-T checkpoint.
+    \item \textbf{Language model:} local \texttt{bert-base-uncased}, used offline to avoid remote Hugging Face dependency.
+    \item \textbf{Dataset format:} COCO detection format.
+    \begin{itemize}
+        \item Training set: \texttt{train2017}
+        \item Validation set: \texttt{val2017}
+        \item Annotation files: \texttt{instances\_train2017.json}, \texttt{instances\_val2017.json}
+    \end{itemize}
+    \item \textbf{Training strategy:} fine-tune the pretrained model for 6 epochs and save one checkpoint after each epoch.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{4.2 Implementation Details: Hyper-parameters}
+\small
+\begin{table}
+\centering
+\begin{tabular}{ll}
+\hline
+\textbf{Item} & \textbf{Setting} \\
+\hline
+Backbone & Swin-T \\
+Language model & BERT-base-uncased \\
+Optimizer & AdamW \\
+Learning rate & $5 \times 10^{-5}$ \\
+Batch size & 2 \\
+Mixed precision & AMP enabled \\
+Training epochs & 6 \\
+Checkpoint interval & 1 epoch \\
+Validation interval & 1 epoch \\
+GPU & NVIDIA RTX 4090 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{0.5em}
+\small
+For inference, a demo script is implemented to support both single-image and batch-image prediction. It takes an image and a text prompt as input, then saves both annotated images and JSON prediction results.
+\end{frame}
+\begin{frame}{4.2 Implementation Details: MMDetection Inference}
+\small
+\begin{itemize}
+    \item \textbf{Class-aware prompt encoding:} the COCO class names are used as text entities, such as \texttt{person . car . dog .}
+    \item \textbf{Token-positive map:} MMDetection records which BERT tokens correspond to each category.
+    For example, the class \texttt{traffic light} may correspond to the tokens \texttt{traffic} and \texttt{light}.
+    \item \textbf{Score conversion:} Grounding DINO predicts box-query scores over text tokens.
+    MMDetection uses the token-positive map to convert token-level scores into class-level scores.
+    \item \textbf{Top-$K$ selection:} instead of applying a fixed box threshold before evaluation, MMDetection selects the top \texttt{max\_per\_img=300} query--class predictions.
+    \item \textbf{Difference from the original script:} the original script filters boxes using a fixed \texttt{box\_threshold}, which may remove low-score candidates before COCO evaluation and reduce recall.
+    \item \textbf{Demo threshold:} in our frontend demo, \texttt{box\_threshold} is applied after MMDetection top-$K$ inference to hide low-confidence boxes for visualization.
+    \item \textbf{Text threshold:} in the MMDetection COCO-style path, categories are mainly determined by the token-positive map.
+    Therefore, \texttt{text\_threshold} no longer directly controls the number of boxes, but is kept for interface compatibility and possible open-vocabulary phrase matching.
+\end{itemize}
+\end{frame}
+
+
 \subsection{4.3 Metrics}
-\placeholderslide{4.3 Metrics}
+
+\begin{frame}{4.3 Metrics}
+\small
+We use the standard COCO object detection metrics to evaluate bounding box detection performance.
+
+\vspace{0.8em}
+
+\begin{itemize}
+    \item \textbf{bbox mAP:} mean Average Precision averaged over IoU thresholds from 0.50 to 0.95. This is the main overall metric.
+    \item \textbf{bbox mAP@50:} AP at IoU threshold 0.50. It reflects whether the model can roughly locate objects.
+    \item \textbf{bbox mAP@75:} AP at IoU threshold 0.75. It requires more accurate bounding box localization.
+    \item \textbf{bbox mAP$_s$, bbox mAP$_m$, bbox mAP$_l$:} AP for small, medium, and large objects respectively.
+\end{itemize}
+
+\vspace{0.8em}
+
+\small
+The final demo checkpoint is selected mainly based on overall \textbf{bbox mAP}, while also considering mAP@50, mAP@75, and object-scale-specific AP.
+\end{frame}
+
+
 \subsection{4.4 Experimental Design \& Results}
-\placeholderslide{4.4 Experimental Design \& Results}
+
+\begin{frame}{4.4 Experimental Design}
+\small
+\begin{itemize}
+    \item First, we evaluate the official pretrained Grounding DINO Swin-T checkpoint as the baseline.
+    \item Then, we fine-tune the model on the COCO training set.
+    \item A checkpoint is saved after each epoch from epoch 1 to epoch 6.
+    \item Each checkpoint is evaluated on the COCO validation set.
+    \item The goal is to observe whether fine-tuning improves detection performance and to select the best checkpoint for the final demo.
+\end{itemize}
+
+\vspace{0.8em}
+
+\small
+This design allows us to compare the pretrained model with fine-tuned checkpoints and analyze whether longer training continues to improve the model.
+\end{frame}
+
+\begin{frame}{4.4 Experimental Results}
+\scriptsize
+\begin{table}
+\centering
+\begin{tabular}{lcccccc}
+\hline
+\textbf{Model} & \textbf{mAP} & \textbf{AP50} & \textbf{AP75} & \textbf{AP$_s$} & \textbf{AP$_m$} & \textbf{AP$_l$} \\
+\hline
+Baseline & 0.485 & 0.645 & 0.530 & 0.342 & 0.518 & 0.635 \\
+Epoch 1 & 0.546 & 0.718 & 0.600 & 0.379 & 0.583 & 0.693 \\
+Epoch 2 & 0.553 & 0.722 & 0.606 & 0.400 & 0.592 & 0.701 \\
+Epoch 3 & 0.556 & 0.726 & 0.610 & 0.393 & 0.594 & 0.703 \\
+Epoch 4 & 0.555 & 0.729 & 0.611 & 0.394 & 0.595 & 0.703 \\
+\textbf{Epoch 5} & \textbf{0.559} & \textbf{0.735} & \textbf{0.615} & \textbf{0.400} & 0.593 & \textbf{0.712} \\
+Epoch 6 & 0.558 & 0.733 & 0.614 & 0.394 & 0.590 & 0.704 \\
+\hline
+\end{tabular}
+\end{table}
+
+\vspace{0.5em}
+
+\small
+Epoch 5 achieves the best overall performance and is selected as the final checkpoint for the demo.
+\end{frame}
+
+\begin{frame}{4.4 Result Analysis}
+\small
+\begin{itemize}
+    \item Fine-tuning significantly improves the model compared with the pretrained baseline.
+    \item Overall bbox mAP improves from \textbf{0.485} to \textbf{0.559}, with an absolute gain of \textbf{0.074}.
+    \item AP50 improves from \textbf{0.645} to \textbf{0.735}, showing better object recognition and coarse localization.
+    \item AP75 improves from \textbf{0.530} to \textbf{0.615}, indicating more accurate bounding box localization.
+    \item Epoch 6 does not further improve over epoch 5, suggesting the model has nearly converged after 5 epochs.
+\end{itemize}
+
+\vspace{0.8em}
+
+\small
+Therefore, we use \textbf{epoch 5} as the final demo model because it has the highest mAP, AP50, AP75, and large-object AP.
+\end{frame}
+
+\begin{frame}{4.4 Sample Visualization}
+\small
+The demo system takes an image and a text prompt as input, then outputs detected objects with bounding boxes, confidence scores, and matched phrases.
+
+\vspace{0.8em}
+
+\begin{itemize}
+    \item Input: image from the demo set.
+    \item Text prompt example: \texttt{person . car . dog .}
+    \item Output: annotated image and JSON prediction file.
+\end{itemize}
+
+\vspace{1em}
+
+% Replace the path below with your actual visualization image.
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=0.8\linewidth]{figures/demo_result.jpg}
+%     \caption{Example detection result of the fine-tuned Grounding DINO model.}
+% \end{figure}
+
+\end{frame}
+
+% ══════════════════════════════════════════════
+\subsection{4.5 Ablation Experiments}
+% ══════════════════════════════════════════════
+
+\begin{frame}{4.5 Ablation: Threshold Sensitivity}
+  \begin{columns}[T]
+    \column{0.46\textwidth}
+    \begin{block}{Experiment Design}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{2pt}
+        \item Three threshold combos tested on COCO 500-image subset
+        \item \textbf{Box th}: min confidence for detected boxes
+        \item \textbf{Text th}: min confidence for text-token match
+        \item Fixed model: Grounding DINO Swin-T, zero-shot
+      \end{itemize}
+    \end{block}
+    \vspace{0.1cm}
+    \begin{block}{Results (subset-500)}
+      \tiny
+      \renewcommand{\arraystretch}{1.15}
+      \begin{tabular}{l c c c c c}
+        \toprule
+        \textbf{Run} & \textbf{box\_th} & \textbf{text\_th} & \textbf{AP} & \textbf{AP50} & \textbf{Box/Img} \\
+        \midrule
+        A1 & 0.25 & 0.20 & \textbf{0.4637} & \textbf{0.5884} & 13.85 \\
+        A2 & 0.35 & 0.25 & 0.4382 & 0.5532 & 7.72 \\
+        A3 & 0.45 & 0.30 & 0.3931 & 0.4827 & 5.08 \\
+        \bottomrule
+      \end{tabular}
+    \end{block}
+
+    \column{0.52\textwidth}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/03_threshold_sensitivity.png}
+    \vspace{0.05cm}
+    \begin{block}{Key Insight}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{1pt}
+        \item Lower threshold $\rightarrow$ \textbf{higher AP} but \textbf{3$\times$ more boxes}
+        \item AP drops \textbf{15\%} from A1 to A3 (box\_th 0.25 $\rightarrow$ 0.45)
+        \item Trade-off: recall vs.\ precision for downstream tasks
+      \end{itemize}
+    \end{block}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{4.5 Ablation: Prompt Format Comparison}
+  \begin{columns}[T]
+    \column{0.46\textwidth}
+    \begin{block}{Experiment Design}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{2pt}
+        \item Three prompt formats on 500-image subset
+        \item Same thresholds: box\_th=0.35, text\_th=0.25
+        \item All 80 COCO categories included in each prompt
+      \end{itemize}
+    \end{block}
+    \vspace{0.1cm}
+    \begin{block}{Results}
+      \footnotesize
+      \renewcommand{\arraystretch}{1.2}
+      \begin{tabular}{l c c}
+        \toprule
+        \textbf{Format} & \textbf{AP} & \textbf{AP50} \\
+        \midrule
+        \textbf{dot-separated} & \textbf{0.4382} & \textbf{0.5532} \\
+        comma-separated & 0.1671 & 0.2038 \\
+        sentence-style & 0.1675 & 0.2051 \\
+        \bottomrule
+      \end{tabular}
+    \end{block}
+    \vspace{0.02cm}
+    \centering
+    \smallnote{Non-dot formats cause $\sim$62\% AP drop}
+
+    \column{0.52\textwidth}
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/04_prompt_format_comparison.png}
+    \vspace{0.05cm}
+    \begin{block}{Why Dot-Separated Wins}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{1pt}
+        \item BERT WordPiece splits \texttt{``.''} as \textbf{independent token}
+        \item Comma merges with preceding word $\rightarrow$ ambiguous boundaries
+        \item Sentence format adds noise tokens that dilute attention
+      \end{itemize}
+    \end{block}
+  \end{columns}
+\end{frame}
 
 % ══════════════════════════════════════════════
 \section{Conclusion}
@@ -415,38 +749,46 @@
 \begin{frame}{5. Conclusion}
   \vspace{-0.2cm}
   \begin{columns}[T]
-    \column{0.55\textwidth}
-    \begin{block}{Problem \& Approach}
+
+    \column{0.48\textwidth}
+    \begin{block}{What We Did}
       \footnotesize
-      \textbf{Challenge}: Open-vocabulary object detection — detect arbitrary categories without per-category training data.
-
-      \textbf{Method}: Reproduced Grounding DINO (Liu et al., ECCV 2024) with Swin-Tiny backbone, zero-shot on COCO 2017 val2017.
-
-      \textbf{Setup}: Config-driven, dot-separated prompts, box\_th=0.35, single-scale, no fine-tuning.
+      \begin{itemize}\setlength{\itemsep}{5pt}
+        \item Reproduced Grounding DINO (Swin-T) with official weights.
+        \item Evaluated zero-shot on full COCO val2017 (5,000 images).
+        \item Built config-driven pipeline (5 modules, 10 scripts).
+      \end{itemize}
+    \end{block}
+    \vspace{0.08cm}
+    \begin{block}{Challenge}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{5pt}
+        \item COCO uses fixed category IDs; model outputs free-form phrases.
+        \item Phrase-to-category mapping required for evaluation.
+        \item Zero-shot AP still lags behind supervised detectors.
+      \end{itemize}
     \end{block}
 
-    \column{0.43\textwidth}
+    \column{0.48\textwidth}
     \begin{block}{Key Findings}
       \footnotesize
-      \begin{enumerate}\setlength{\itemsep}{2pt}
-        \item Zero-shot detection is viable without task-specific training
-        \item Threshold selection critically impacts precision-recall
-        \item Dot-separated prompts are a functional requirement
-        \item Small-object detection is the primary bottleneck
-        \item Localization lags behind recognition
+      \begin{enumerate}\setlength{\itemsep}{5pt}
+        \item Dot-separated prompts are essential (others drop AP 62\%).
+        \item Lower thresholds improve AP but add 3× detections.
+        \item Small objects (APS=0.26) are 2.1× worse than large (APL=0.55).
       \end{enumerate}
     \end{block}
-  \end{columns}
+    \vspace{0.08cm}
+    \begin{block}{Future Work}
+      \footnotesize
+      \begin{itemize}\setlength{\itemsep}{5pt}
+        \item Fine-tune on COCO train for better performance.
+        \item Cross-dataset evaluation (ODinW, LVIS).
+        \item Compare with YOLO-World, OWL-ViT under same protocol.
+      \end{itemize}
+    \end{block}
 
-  \vspace{0.15cm}
-  \centering
-  \begin{tikzpicture}
-    \node[rounded corners=4pt, fill=Blue!8, draw=Blue!45, text width=14cm, inner sep=5pt, font=\footnotesize] {
-      \textbf{Summary:} Open-vocabulary detection is feasible in a zero-shot setting.
-      The modular pipeline enables rapid experimentation and serves as a foundation
-      for fine-tuning, cross-dataset evaluation, and deployment optimization.
-    };
-  \end{tikzpicture}
+  \end{columns}
 \end{frame}
 
 % ══════════════════════════════════════════════
@@ -481,9 +823,9 @@
     \begin{block}{苏思齐 (12310645)}
       \scriptsize
       \begin{itemize}\setlength{\itemsep}{2pt}
-        \item [To be completed]
-        \item [To be completed]
-        \item [To be completed]
+        \item 设计和执行微调方案
+        \item 部分ppt
+        \item 参与修改后端推理脚本
       \end{itemize}
     \end{block}
 
@@ -502,9 +844,9 @@
     \begin{block}{莫丰源 (12311805)}
       \scriptsize
       \begin{itemize}\setlength{\itemsep}{2pt}
-        \item [To be completed]
-        \item [To be completed]
-        \item [To be completed]
+        \item 参与前期参数初调，包括 box/text threshold 与 prompt 格式
+        \item 设计 demo 前端页面，展示训练指标与实时检测结果
+        \item 完成前后端落地对接，支持图片上传、文本输入和结果可视化
       \end{itemize}
     \end{block}
   \end{columns}

@@ -1,0 +1,5 @@
+PWD E:/Desktop/CV_ComputerVision/CV_Project_2026_S/ppt
+INPUT d:/Develop/texlive/2024/texmf.cnf
+INPUT d:/Develop/texlive/2024/texmf-dist/web2c/texmf.cnf
+INPUT d:/Develop/texlive/2024/texmf-var/web2c/xetex/xelatex.fmt
+INPUT main.tex
