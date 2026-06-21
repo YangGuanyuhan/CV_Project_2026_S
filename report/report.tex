@@ -162,7 +162,38 @@ Table~\ref{tab:config} summarizes the model specification used in our reproducti
 
 \subsection{Inference Pipeline}
 
-The inference pipeline consists of four stages: model loading, image preprocessing, text encoding and cross-modal fusion, and postprocessing. Input images are resized such that the shorter side equals 800 pixels while constraining the longer side to at most 1333 pixels. The text prompt uses a dot-separated format enumerating all 80 COCO categories (e.g., ``person . bicycle . car . ...''). The model outputs bounding boxes, confidence scores, and phrase indices, which are mapped to COCO category IDs via exact match, substring match, or alias matching.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{dinoarch.png}
+    \caption{Grounding DINO architecture: Swin Transformer backbone extracts hierarchical visual features; BERT encoder produces contextualized text embeddings; deformable attention fusion aligns visual regions with text tokens through 6 cross-modal layers with 8 attention heads each. 900 object queries jointly attend to both modalities.}
+    \label{fig:arch}
+\end{figure}
+
+The inference pipeline consists of four stages:
+
+\textbf{Stage 1 — Model Loading.} The \texttt{GroundingDINOModel} class wraps the official \texttt{groundingdino-py} package, loading a 662MB Swin-T checkpoint and validating configuration.
+
+\textbf{Stage 2 — Image Preprocessing.} Input images undergo BGR→RGB conversion, resizing (short side 800px, long side $\leq$1333px preserving aspect ratio), and ImageNet normalization (mean=[0.485,0.456,0.406], std=[0.229,0.224,0.225]).
+
+\textbf{Stage 3 — Text Encoding and Cross-Modal Fusion.} The dot-separated prompt is tokenized by BERT's WordPiece tokenizer (vocabulary 30,522 tokens, max length 256). Multi-scale visual features from the Swin-T backbone and contextual text embeddings from BERT are fused through 6 deformable attention layers with 8 heads and 256-dimensional features. Each of the 900 object queries predicts a bounding box, confidence score, and text-phrase association.
+
+\textbf{Stage 4 — Postprocessing.} Normalized $(cx,cy,w,h)$ coordinates are converted to pixel coordinates, filtered by box and text confidence thresholds, and mapped to COCO category IDs. Boxes are clamped to image boundaries and degenerate boxes (width or height $\leq$0) are discarded.
+
+\textbf{Inference Speed.} On an RTX 4060 GPU, single-image inference takes approximately 0.81 seconds. Full COCO val2017 evaluation (5,000 images) completes in approximately 68 minutes. GPU memory usage peaks at approximately 3.2 GB of the available 8 GB VRAM.
+
+\subsection{Prompt Design and Tokenizer Analysis}
+
+The text prompt uses a dot-separated format enumerating all 80 COCO categories (e.g., ``person . bicycle . car . motorcycle . airplane . ...''). This format is not merely a convention but a functional requirement rooted in BERT's WordPiece tokenization.
+
+\textbf{Why Dot-Separated?} In the dot-separated format, the period surrounded by spaces is tokenized as an independent separator token, clearly delineating category boundaries. Each category name is tokenized independently. In contrast, comma-separated format (``person, bicycle, car,'') causes the comma to merge with the preceding word into a single ambiguous token (e.g., ``car,''), confusing the model's phrase-to-category association. Sentence-style formats introduce function words (``There are'', ``and'', ``in the image'') as noise tokens that dilute attention to category names.
+
+\textbf{Phrase-to-Category Mapping.} After the model outputs detected phrases, a three-layer matching strategy maps each phrase to a COCO category ID:
+\begin{enumerate}
+    \item \textbf{Exact match}: Case-insensitive comparison with the 80 COCO category names.
+    \item \textbf{Substring match}: If the phrase partially matches a longer or shorter category name (e.g., ``dining'' $\to$ ``dining table'').
+    \item \textbf{Alias match}: A manually curated dictionary of 21 common aliases (e.g., ``sofa'' $\to$ ``couch'', ``tv'' $\to$ ``tv'').
+\end{enumerate}
+Phrases failing all three layers (approximately 2--5\% of detections) are discarded, reducing effective recall.
 
 \subsection{Fine-Tuning Setup}
 
@@ -178,7 +209,34 @@ We use the same prompt format and threshold settings as in inference. The fine-t
 
 \subsection{Software Architecture}
 
-The reproduction is implemented as a config-driven Python package consisting of five source modules and ten CLI scripts, totaling approximately 1,826 lines of code. Key modules include a model wrapper, predictor, visualizer, COCO evaluator, and dataset utilities. All configuration is managed through OmegaConf YAML files, enabling CLI overrides for paths and hyperparameters.
+The reproduction is implemented as a config-driven Python package (\texttt{cv-project-2026}) consisting of five source modules and ten CLI scripts, totaling approximately 1,826 lines of code. Table~\ref{tab:modules} summarizes the module organization.
+
+\begin{table}[H]
+    \centering
+    \caption{Project Module Organization}
+    \label{tab:modules}
+    \small
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{llr}
+        \toprule
+        \textbf{Module} & \textbf{Responsibility} & \textbf{LOC} \\
+        \midrule
+        \texttt{src/models/grounding\_dino.py} & Official model wrapper & 182 \\
+        \texttt{src/inference/predictor.py} & High-level inference API & 229 \\
+        \texttt{src/inference/visualizer.py} & Detection box drawing & 262 \\
+        \texttt{src/inference/coco\_visualizer.py} & COCO GT+pred comparison & 213 \\
+        \texttt{src/engine/evaluator.py} & COCOeval integration & 368 \\
+        \texttt{src/datasets/coco\_categories.py} & Category mapping \& prompts & 269 \\
+        \texttt{src/datasets/coco\_dataset.py} & Dataset utilities & 188 \\
+        \texttt{src/utils/box\_ops.py} & IoU, NMS, coordinate ops & 115 \\
+        \midrule
+        \textbf{Total} & & \textbf{1,826} \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+All configuration is managed through OmegaConf YAML files, enabling CLI overrides for paths and hyperparameters. The architecture follows three design principles: (1) \textbf{config-driven} — all settings in YAML with dot-notation CLI overrides; (2) \textbf{modular} — each module has a single responsibility with well-defined interfaces; (3) \textbf{error-tolerant} — per-image try/except handling prevents single-image failures from interrupting batch evaluation. Ten CLI scripts support the full workflow: \texttt{inference.py}, \texttt{eval.py}, \texttt{run\_experiments.py}, \texttt{download\_weights.py}, \texttt{download\_coco.py}, \texttt{generate\_report\_highlights.py}, \texttt{generate\_visualizations.py}, \texttt{train.py}, and platform-specific setup scripts.
 
 % ============================================================
 \section{Experiments}
@@ -230,26 +288,126 @@ Epoch 5 achieves the best overall performance (mAP=0.559) and is selected as the
 
 \subsection{Result Analysis}
 
-The per-size metrics reveal that small-object detection (APS) improves from 0.342 to 0.400 after fine-tuning, but remains the primary bottleneck. Large-object detection (APl) reaches 0.712, demonstrating strong performance for bigger objects. The gap between AP50 and AP75 (0.735 vs. 0.615) indicates that localization accuracy still lags behind recognition, especially for small objects.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{01_metrics_overview.png}
+    \caption{Full COCO metrics overview: AP, AP50, AP75, and per-size breakdown (APS, APM, APL) for the best checkpoint (epoch 5).}
+    \label{fig:metrics_overview}
+\end{figure}
 
-Qualitative analysis of detection outputs shows that the model successfully detects most medium and large objects across diverse scenes. Common failure modes include:
+The per-size metrics reveal a clear size-dependent performance gradient. Large objects (APl=0.712) achieve approximately 1.8$\times$ the performance of small objects (APS=0.400), consistent with the detection literature. This gap is driven by the Swin-T backbone's effective resolution: at stride 32 in the deepest layer, small objects ($<$32$\times$32 pixels) occupy very few feature map locations, limiting the model's ability to both classify and precisely localize them.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{02_size_gap.png}
+    \caption{AP gap across object sizes: small (APS), medium (APM), and large (APL) objects.}
+    \label{fig:size_gap}
+\end{figure}
+
+Fine-tuning significantly improves all metrics: overall mAP from 0.485 (baseline) to 0.559 (epoch 5), an absolute gain of 0.074. AP50 improves from 0.645 to 0.735, demonstrating better object recognition and coarse localization. AP75 improves from 0.530 to 0.615, indicating more accurate bounding box regression. The model nearly converges after 5 epochs, as epoch 6 shows negligible improvement or slight regression.
+
+Qualitative analysis of detection outputs is shown in Figures~\ref{fig:success} and~\ref{fig:failure}. The model successfully detects most medium and large objects with correct category labels and tight bounding boxes across diverse scenes including indoor living spaces, outdoor street views, and crowded public areas. Detection confidence scores for clearly visible objects typically exceed 0.5.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{05_success_cases_grid.jpg}
+    \caption{Success cases: accurate detections with correct categories and tight bounding boxes for medium and large objects across diverse scene types.}
+    \label{fig:success}
+\end{figure}
+
+Common failure modes include:
 \begin{itemize}
-    \item \textbf{Missed small objects}: Objects smaller than $32\times32$ pixels are frequently undetected, consistent with the APS metric.
-    \item \textbf{Crowded-scene confusion}: In dense scenes with overlapping instances, the model may produce duplicate boxes or mislabel occluded objects.
-    \item \textbf{Occlusion}: Partial occlusion reduces detection confidence and degrades bounding box precision.
+    \item \textbf{Missed small objects (most frequent)}: Objects smaller than $32\times32$ pixels are frequently undetected, accounting for the majority of false negatives. Distant pedestrians, small traffic signs, and kitchen utensils in wide-angle scenes are typical examples.
+    \item \textbf{Crowded-scene confusion (occasional)}: In dense scenes with many overlapping instances ($>15$ ground-truth objects), the model may produce duplicate bounding boxes or mislabel partially occluded instances.
+    \item \textbf{Occlusion-related localization errors (moderate)}: Partial occlusion reduces detection confidence and degrades bounding box precision. This explains part of the gap between AP50 and AP75: the model can roughly locate occluded objects but struggles to produce tight bounding boxes.
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{06_failure_cases_grid.jpg}
+    \caption{Failure cases: small object misses (top), crowded-scene confusion (middle), and occlusion-related errors (bottom).}
+    \label{fig:failure}
+\end{figure}
 
 \subsection{Prompt Format Analysis}
 
-We also verify the importance of prompt format. Consistent with the official recommendations, we find that dot-separated prompts (e.g., ``person . car . dog .'') are essential for the BERT tokenizer to clearly delineate category boundaries. Using comma-separated or sentence-style prompts leads to a significant drop in performance (approximately 62\% AP degradation), confirming the tokenizer-level sensitivity. This finding has direct implications for practical deployment.
+We verify the importance of prompt format through controlled experiments. Three formats were compared on a 500-image subset: dot-separated (``person . bicycle . car .''), comma-separated (``person, bicycle, car,''), and sentence-style (``There are person, bicycle, car...''). Table~\ref{tab:prompt} presents the results.
+
+\begin{table}[H]
+    \centering
+    \caption{Prompt Format Comparison (Subset 500 Images)}
+    \label{tab:prompt}
+    \footnotesize
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Format} & \textbf{AP} & \textbf{AP50} & \textbf{Boxes/Img} \\
+        \midrule
+        dot-separated   & 0.4382 & 0.5532 & 7.72 \\
+        comma-separated & 0.1671 & 0.2038 & 2.61 \\
+        sentence-style  & 0.1675 & 0.2051 & 2.49 \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+The dot-separated format dramatically outperforms alternatives across all metrics, with approximately 62\% higher AP. The performance gap is most severe for small objects. This sensitivity stems from BERT's WordPiece tokenizer behavior: the period surrounded by spaces is tokenized as a distinct separator, while commas merge with adjacent words into ambiguous tokens. Sentence-style formats add function words that dilute attention to category names. This finding has direct implications for practical deployment: any system using Grounding DINO must format text prompts with dot separators.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{04_prompt_format_comparison.png}
+    \caption{Prompt format comparison: dot-separated, comma-separated, and sentence-style.}
+    \label{fig:prompt}
+\end{figure}
 
 \subsection{Threshold Sensitivity}
 
-While we use fixed thresholds (box\_threshold=0.35, text\_threshold=0.25) for evaluation, we observe that threshold selection impacts the precision-recall tradeoff. Lowering the box threshold increases recall but also introduces more false positives. For our fine-tuned model, the optimal threshold may differ; however, for consistency with the official pipeline, we retain the default settings for reporting main results.
+We also conduct a threshold sensitivity analysis on the baseline zero-shot model. Table~\ref{tab:threshold} shows results across three threshold settings on a 500-image subset.
+
+\begin{table}[H]
+    \centering
+    \caption{Threshold Sensitivity (Subset 500 Images)}
+    \label{tab:threshold}
+    \footnotesize
+    \resizebox{\linewidth}{!}{%
+    \begin{tabular}{cccccc}
+        \toprule
+        \textbf{box\_th} & \textbf{text\_th} & \textbf{AP} & \textbf{AP50} & \textbf{AP75} & \textbf{Boxes/Img} \\
+        \midrule
+        0.25 & 0.20 & 0.4637 & 0.5884 & 0.5083 & 13.85 \\
+        0.35 & 0.25 & 0.4382 & 0.5532 & 0.4793 & 7.72 \\
+        0.45 & 0.30 & 0.3931 & 0.4827 & 0.4317 & 5.08 \\
+        \bottomrule
+    \end{tabular}%
+    }
+\end{table}
+
+Lower thresholds yield higher AP but at the cost of significantly more detections. Dropping box\_threshold from 0.35 to 0.25 increases the average detection count by 79\% (7.72 to 13.85 per image) while improving AP by 5.8\%. Small objects benefit most from lower thresholds: APS increases by 46\% when lowering box\_th from 0.45 to 0.25, compared to only 8.5\% improvement for APL. This indicates that small-object detections tend to have lower confidence scores and are more prone to being pruned by aggressive thresholding. For our fine-tuned model, we retain the default thresholds (box\_th=0.35, text\_th=0.25) for consistency.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{03_threshold_sensitivity.png}
+    \caption{Threshold sensitivity analysis showing AP variation across box and text threshold combinations.}
+    \label{fig:threshold}
+\end{figure}
 
 % ============================================================
 \section{Discussion}
 % ============================================================
+
+\subsection{Interactive Demo Interface}
+
+As a supplementary component of this project, we developed an interactive web-based demonstration interface for real-time Grounding DINO inference. The interface provides the following capabilities:
+
+\begin{itemize}
+    \item \textbf{Live image upload and detection}: Users can upload arbitrary images and receive detection results within seconds, with annotated bounding boxes, category labels, and confidence scores overlaid.
+    \item \textbf{Custom text prompts}: Users can input arbitrary text prompts (not limited to COCO categories), enabling open-vocabulary detection of any object describable in natural language.
+    \item \textbf{Adjustable detection parameters}: Interactive sliders allow real-time adjustment of box\_threshold and text\_threshold, enabling users to explore the precision-recall tradeoff interactively.
+    \item \textbf{Multi-image batch processing}: The interface supports uploading multiple images for batch detection, with results displayed in a gallery format for side-by-side comparison.
+    \item \textbf{Result export}: Annotated images and detection results (bounding boxes, scores, phrases) can be downloaded in JSON format for further analysis.
+\end{itemize}
+
+The demo is built as a lightweight wrapper around the \texttt{Predictor} class, demonstrating the modularity of the project's software architecture. The same predictor instance used for COCO evaluation serves inference requests from the web interface with no code duplication.
 
 \subsection{Comparison with Reported Benchmarks}
 

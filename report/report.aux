@@ -30,20 +30,47 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Model Configuration}{2}{subsection.3.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Complete Grounding DINO Model Specification}}{2}{table.2}\protected@file@percent }
 \newlabel{tab:config}{{II}{2}{Complete Grounding DINO Model Specification}{table.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Inference Pipeline}{2}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}Inference Pipeline}{3}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Grounding DINO architecture: Swin Transformer backbone extracts hierarchical visual features; BERT encoder produces contextualized text embeddings; deformable attention fusion aligns visual regions with text tokens through 6 cross-modal layers with 8 attention heads each. 900 object queries jointly attend to both modalities.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:arch}{{1}{3}{Grounding DINO architecture: Swin Transformer backbone extracts hierarchical visual features; BERT encoder produces contextualized text embeddings; deformable attention fusion aligns visual regions with text tokens through 6 cross-modal layers with 8 attention heads each. 900 object queries jointly attend to both modalities}{figure.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Prompt Design and Tokenizer Analysis}{3}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Fine-Tuning Setup}{3}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-E}}Software Architecture}{3}{subsection.3.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Project Module Organization}}{3}{table.3}\protected@file@percent }
+\newlabel{tab:modules}{{III}{3}{Project Module Organization}{table.3}{}}
 \citation{Lin14}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Fine-Tuning Setup}{3}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Software Architecture}{3}{subsection.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments}{3}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Datasets}{3}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Implementation Details}{3}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Metrics}{3}{subsection.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Experimental Design}{3}{subsection.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Main Results}{3}{subsection.4.5}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces COCO val2017 Evaluation Results (Baseline and Fine-tuned Checkpoints)}}{3}{table.3}\protected@file@percent }
-\newlabel{tab:main_results}{{III}{3}{COCO val2017 Evaluation Results (Baseline and Fine-tuned Checkpoints)}{table.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Result Analysis}{3}{subsection.4.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-G}}Prompt Format Analysis}{3}{subsection.4.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Experiments}{4}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Datasets}{4}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Implementation Details}{4}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Metrics}{4}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Experimental Design}{4}{subsection.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}Main Results}{4}{subsection.4.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {IV}{\ignorespaces COCO val2017 Evaluation Results (Baseline and Fine-tuned Checkpoints)}}{4}{table.4}\protected@file@percent }
+\newlabel{tab:main_results}{{IV}{4}{COCO val2017 Evaluation Results (Baseline and Fine-tuned Checkpoints)}{table.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Result Analysis}{4}{subsection.4.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Full COCO metrics overview: AP, AP50, AP75, and per-size breakdown (APS, APM, APL) for the best checkpoint (epoch 5).}}{4}{figure.2}\protected@file@percent }
+\newlabel{fig:metrics_overview}{{2}{4}{Full COCO metrics overview: AP, AP50, AP75, and per-size breakdown (APS, APM, APL) for the best checkpoint (epoch 5)}{figure.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces AP gap across object sizes: small (APS), medium (APM), and large (APL) objects.}}{4}{figure.3}\protected@file@percent }
+\newlabel{fig:size_gap}{{3}{4}{AP gap across object sizes: small (APS), medium (APM), and large (APL) objects}{figure.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Success cases: accurate detections with correct categories and tight bounding boxes for medium and large objects across diverse scene types.}}{5}{figure.4}\protected@file@percent }
+\newlabel{fig:success}{{4}{5}{Success cases: accurate detections with correct categories and tight bounding boxes for medium and large objects across diverse scene types}{figure.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Failure cases: small object misses (top), crowded-scene confusion (middle), and occlusion-related errors (bottom).}}{5}{figure.5}\protected@file@percent }
+\newlabel{fig:failure}{{5}{5}{Failure cases: small object misses (top), crowded-scene confusion (middle), and occlusion-related errors (bottom)}{figure.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-G}}Prompt Format Analysis}{5}{subsection.4.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {V}{\ignorespaces Prompt Format Comparison (Subset 500 Images)}}{5}{table.5}\protected@file@percent }
+\newlabel{tab:prompt}{{V}{5}{Prompt Format Comparison (Subset 500 Images)}{table.5}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Prompt format comparison: dot-separated, comma-separated, and sentence-style.}}{6}{figure.6}\protected@file@percent }
+\newlabel{fig:prompt}{{6}{6}{Prompt format comparison: dot-separated, comma-separated, and sentence-style}{figure.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-H}}Threshold Sensitivity}{6}{subsection.4.8}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {VI}{\ignorespaces Threshold Sensitivity (Subset 500 Images)}}{6}{table.6}\protected@file@percent }
+\newlabel{tab:threshold}{{VI}{6}{Threshold Sensitivity (Subset 500 Images)}{table.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Threshold sensitivity analysis showing AP variation across box and text threshold combinations.}}{6}{figure.7}\protected@file@percent }
+\newlabel{fig:threshold}{{7}{6}{Threshold sensitivity analysis showing AP variation across box and text threshold combinations}{figure.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{6}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Interactive Demo Interface}{6}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Comparison with Reported Benchmarks}{6}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Limitations}{6}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Future Work}{6}{subsection.5.4}\protected@file@percent }
 \bibstyle{IEEEtran}
 \bibdata{sample}
 \bibcite{Liu23}{1}
@@ -56,19 +83,14 @@
 \bibcite{Minderer22}{8}
 \bibcite{Cheng24}{9}
 \bibcite{Lin14}{10}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-H}}Threshold Sensitivity}{4}{subsection.4.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}Discussion}{4}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Comparison with Reported Benchmarks}{4}{subsection.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Limitations}{4}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Future Work}{4}{subsection.5.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{4}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{4}{section*.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Reproduction Commands}{4}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-A}}Environment Setup}{4}{subsection.Appendix.A.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-B}}Data and Model Download}{4}{subsection.Appendix.A.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-C}}Single-Image Inference}{5}{subsection.Appendix.A.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-D}}Full COCO val2017 Evaluation}{5}{subsection.Appendix.A.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-E}}Fine-Tuning (6 Epochs)}{5}{subsection.Appendix.A.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Complete COCO Prompt}{5}{section*.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  C: Output File Structure}{5}{section*.4}\protected@file@percent }
-\gdef \@abspage@last{5}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Conclusion}{7}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{7}{section*.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  A: Reproduction Commands}{7}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-A}}Environment Setup}{7}{subsection.Appendix.A.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-B}}Data and Model Download}{7}{subsection.Appendix.A.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-C}}Single-Image Inference}{7}{subsection.Appendix.A.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-D}}Full COCO val2017 Evaluation}{7}{subsection.Appendix.A.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {A-E}}Fine-Tuning (6 Epochs)}{7}{subsection.Appendix.A.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  B: Complete COCO Prompt}{7}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendix\nobreakspace  C: Output File Structure}{8}{section*.4}\protected@file@percent }
+\gdef \@abspage@last{8}
