@@ -83,8 +83,9 @@ class COCOEvaluator:
         Args:
             image_dir: Directory containing COCO images.
             image_ids: List of image IDs to process. If None, processes all.
-            box_threshold: Box confidence threshold.
-            text_threshold: Text-token matching threshold.
+            box_threshold: Kept for API compatibility; MMDetection inference
+                uses top-k selection from test_cfg.max_per_img instead.
+            text_threshold: Kept for API compatibility.
             max_images: Maximum number of images to process.
 
         Returns:

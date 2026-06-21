@@ -6,14 +6,14 @@ on COCO subsets.
 Usage:
     # Run all experiments
     python scripts/run_experiments.py \\
-        --checkpoint checkpoints/groundingdino_swint_ogc.pth \\
+        --checkpoint checkpoints/groundingdino_swint_coco_epoch_5.pth \\
         --coco_image_dir data/coco/val2017 \\
         --coco_ann_file data/coco/annotations/instances_val2017.json \\
         --subset_size 500
 
     # Run only threshold experiments
     python scripts/run_experiments.py \\
-        --checkpoint checkpoints/groundingdino_swint_ogc.pth \\
+        --checkpoint checkpoints/groundingdino_swint_coco_epoch_5.pth \\
         --coco_image_dir data/coco/val2017 \\
         --coco_ann_file data/coco/annotations/instances_val2017.json \\
         --subset_size 500 \\
@@ -21,7 +21,7 @@ Usage:
 
     # Run only prompt experiments
     python scripts/run_experiments.py \\
-        --checkpoint checkpoints/groundingdino_swint_ogc.pth \\
+        --checkpoint checkpoints/groundingdino_swint_coco_epoch_5.pth \\
         --coco_image_dir data/coco/val2017 \\
         --coco_ann_file data/coco/annotations/instances_val2017.json \\
         --subset_size 500 \\
@@ -123,9 +123,16 @@ def run_single_experiment(
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Run ablation experiments")
-    parser.add_argument("--checkpoint", type=str, required=True)
     parser.add_argument(
-        "--model_config", type=str, default="groundingdino/config/GroundingDINO_SwinT_OGC.py"
+        "--checkpoint",
+        type=str,
+        default="checkpoints/groundingdino_swint_coco_epoch_5.pth",
+    )
+    parser.add_argument(
+        "--model_config",
+        type=str,
+        default=None,
+        help="Path to MMDetection config file (default: use checkpoint metadata)",
     )
     parser.add_argument("--coco_image_dir", type=str, required=True)
     parser.add_argument("--coco_ann_file", type=str, required=True)

@@ -1,0 +1,61 @@
+{
+  "source": "aaa",
+  "best_checkpoint": "checkpoints/groundingdino_swint_coco_epoch_5.pth",
+  "policy": "current training run only; historical local results are intentionally excluded",
+  "metrics": [
+    {
+      "epoch": 1,
+      "mAP": 0.546,
+      "AP50": 0.718,
+      "AP75": 0.600,
+      "APS": 0.379,
+      "APM": 0.583,
+      "APL": 0.693
+    },
+    {
+      "epoch": 2,
+      "mAP": 0.553,
+      "AP50": 0.722,
+      "AP75": 0.606,
+      "APS": 0.400,
+      "APM": 0.592,
+      "APL": 0.701
+    },
+    {
+      "epoch": 3,
+      "mAP": 0.556,
+      "AP50": 0.726,
+      "AP75": 0.610,
+      "APS": 0.393,
+      "APM": 0.594,
+      "APL": 0.703
+    },
+    {
+      "epoch": 4,
+      "mAP": 0.555,
+      "AP50": 0.729,
+      "AP75": 0.611,
+      "APS": 0.394,
+      "APM": 0.595,
+      "APL": 0.703
+    },
+    {
+      "epoch": 5,
+      "mAP": 0.559,
+      "AP50": 0.735,
+      "AP75": 0.615,
+      "APS": 0.400,
+      "APM": 0.593,
+      "APL": 0.712
+    },
+    {
+      "epoch": 6,
+      "mAP": 0.558,
+      "AP50": 0.733,
+      "AP75": 0.614,
+      "APS": 0.394,
+      "APM": 0.590,
+      "APL": 0.704
+    }
+  ]
+}

@@ -7,14 +7,14 @@ Usage:
     # Full COCO val2017 evaluation
     python scripts/eval.py \\
         --config configs/grounding_dino.yaml \\
-        --checkpoint checkpoints/groundingdino_swint_ogc.pth \\
+        --checkpoint checkpoints/groundingdino_swint_coco_epoch_5.pth \\
         --coco_image_dir data/coco/val2017 \\
         --coco_ann_file data/coco/annotations/instances_val2017.json
 
     # Subset evaluation (100 images)
     python scripts/eval.py \\
         --config configs/grounding_dino.yaml \\
-        --checkpoint checkpoints/groundingdino_swint_ogc.pth \\
+        --checkpoint checkpoints/groundingdino_swint_coco_epoch_5.pth \\
         --coco_image_dir data/coco/val2017 \\
         --coco_ann_file data/coco/annotations/instances_val2017.json \\
         --subset_size 100 \\
@@ -23,7 +23,7 @@ Usage:
     # Custom thresholds
     python scripts/eval.py \\
         --config configs/grounding_dino.yaml \\
-        --checkpoint checkpoints/groundingdino_swint_ogc.pth \\
+        --checkpoint checkpoints/groundingdino_swint_coco_epoch_5.pth \\
         --coco_image_dir data/coco/val2017 \\
         --coco_ann_file data/coco/annotations/instances_val2017.json \\
         --box_threshold 0.3 --text_threshold 0.25
@@ -66,14 +66,14 @@ def parse_args():
     parser.add_argument(
         "--checkpoint",
         type=str,
-        required=True,
+        default="checkpoints/groundingdino_swint_coco_epoch_5.pth",
         help="Path to model checkpoint",
     )
     parser.add_argument(
         "--model_config",
         type=str,
-        default="groundingdino/config/GroundingDINO_SwinT_OGC.py",
-        help="Path to Grounding DINO model config",
+        default=None,
+        help="Path to MMDetection model config (default: use checkpoint metadata)",
     )
 
     # COCO data
@@ -101,13 +101,13 @@ def parse_args():
         "--box_threshold",
         type=float,
         default=0.35,
-        help="Box confidence threshold (default: 0.35)",
+        help="Compatibility option; MMDetection inference keeps top-k predictions",
     )
     parser.add_argument(
         "--text_threshold",
         type=float,
         default=0.25,
-        help="Text-token matching threshold (default: 0.25)",
+        help="Compatibility option; MMDetection builds token-positive maps from text",
     )
     parser.add_argument(
         "--subset_size",

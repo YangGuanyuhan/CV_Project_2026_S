@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 import cv2
+import numpy as np
 
 from src.models.grounding_dino import GroundingDINOModel
 
@@ -19,8 +20,7 @@ class Predictor:
 
     Example:
         >>> predictor = Predictor(
-        ...     config_path="groundingdino/config/GroundingDINO_SwinT_OGC.py",
-        ...     checkpoint_path="checkpoints/groundingdino_swint_ogc.pth",
+        ...     checkpoint_path="checkpoints/groundingdino_swint_coco_epoch_5.pth",
         ... )
         >>> result = predictor.predict("image.jpg", "person . car .")
         >>> predictor.save_results(result, "output_dir/")
@@ -28,21 +28,25 @@ class Predictor:
 
     def __init__(
         self,
-        config_path: str,
-        checkpoint_path: str,
+        config_path: str | None = None,
+        checkpoint_path: str = "checkpoints/groundingdino_swint_coco_epoch_5.pth",
         device: str | None = None,
+        bert_model_name: str | None = None,
     ):
         """Initialize the predictor.
 
         Args:
-            config_path: Path to the Grounding DINO config file.
-            checkpoint_path: Path to the model checkpoint.
+            config_path: Optional path to an MMDetection config file. If None,
+                the config embedded in the checkpoint is used.
+            checkpoint_path: Path to the MMDetection model checkpoint.
             device: Device to run on ('cuda' or 'cpu').
+            bert_model_name: Optional local path or HuggingFace name for BERT.
         """
         self.model = GroundingDINOModel(
             config_path=config_path,
             checkpoint_path=checkpoint_path,
             device=device,
+            bert_model_name=bert_model_name,
         )
 
     def predict(
@@ -57,8 +61,10 @@ class Predictor:
         Args:
             image_path: Path to the input image.
             text_prompt: Text prompt for detection.
-            box_threshold: Confidence threshold for detections.
-            text_threshold: Threshold for text-token matching.
+            box_threshold: Minimum score for boxes returned to callers. The
+                MMDetection model first produces top-k candidates, then this
+                threshold filters low-confidence boxes for display.
+            text_threshold: Kept for API compatibility.
 
         Returns:
             Dictionary with keys:
@@ -86,6 +92,13 @@ class Predictor:
             text_threshold=text_threshold,
         )
         inference_time = time.time() - start_time
+        num_topk_candidates = len(boxes)
+        boxes, scores, phrases = self._filter_by_score(
+            boxes=boxes,
+            scores=scores,
+            phrases=phrases,
+            min_score=box_threshold,
+        )
 
         result = {
             "image_path": image_path,
@@ -94,7 +107,10 @@ class Predictor:
             "scores": scores,
             "phrases": phrases,
             "num_detections": len(boxes),
+            "num_topk_candidates": num_topk_candidates,
             "inference_time": round(inference_time, 4),
+            "inference_mode": f"mmdet_topk_{self.model.max_per_img}",
+            "score_threshold": box_threshold,
         }
 
         logger.info(
@@ -104,6 +120,25 @@ class Predictor:
             inference_time,
         )
         return result
+
+    @staticmethod
+    def _filter_by_score(
+        boxes: np.ndarray,
+        scores: list[float],
+        phrases: list[str],
+        min_score: float,
+    ) -> tuple[np.ndarray, list[float], list[str]]:
+        """Filter top-k candidates by display score threshold."""
+        if len(boxes) == 0:
+            return boxes, [], []
+
+        scores_array = np.asarray(scores, dtype=float)
+        keep = scores_array >= float(min_score)
+        if not np.any(keep):
+            return np.zeros((0, 4), dtype=boxes.dtype), [], []
+
+        filtered_phrases = [phrase for phrase, keep_item in zip(phrases, keep, strict=False) if keep_item]
+        return boxes[keep], scores_array[keep].tolist(), filtered_phrases
 
     def predict_batch(
         self,
@@ -117,8 +152,8 @@ class Predictor:
         Args:
             image_paths: List of paths to input images.
             text_prompt: Text prompt for detection.
-            box_threshold: Confidence threshold for detections.
-            text_threshold: Threshold for text-token matching.
+            box_threshold: Minimum score for boxes returned to callers.
+            text_threshold: Kept for API compatibility.
 
         Returns:
             List of result dictionaries, one per image.
@@ -169,8 +204,8 @@ class Predictor:
         Args:
             image_dir: Path to directory containing images.
             text_prompt: Text prompt for detection.
-            box_threshold: Confidence threshold for detections.
-            text_threshold: Threshold for text-token matching.
+            box_threshold: Minimum score for boxes returned to callers.
+            text_threshold: Kept for API compatibility.
             extensions: Tuple of valid image file extensions.
 
         Returns:

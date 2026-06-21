@@ -54,13 +54,13 @@ def parse_args():
     parser.add_argument(
         "--config",
         type=str,
-        default="groundingdino/config/GroundingDINO_SwinT_OGC.py",
-        help="Path to Grounding DINO config file",
+        default=None,
+        help="Path to MMDetection config file (default: use checkpoint metadata)",
     )
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="checkpoints/groundingdino_swint_ogc.pth",
+        default="checkpoints/groundingdino_swint_coco_epoch_5.pth",
         help="Path to model checkpoint",
     )
 
@@ -69,13 +69,13 @@ def parse_args():
         "--box_threshold",
         type=float,
         default=0.35,
-        help="Box confidence threshold (default: 0.35)",
+        help="Compatibility option; MMDetection inference keeps top-k predictions",
     )
     parser.add_argument(
         "--text_threshold",
         type=float,
         default=0.25,
-        help="Text-token matching threshold (default: 0.25)",
+        help="Compatibility option; MMDetection builds token-positive maps from text",
     )
 
     # Output options

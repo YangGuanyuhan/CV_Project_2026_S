@@ -13,16 +13,13 @@
           <span class="brand-mark">GD</span>
           <div>
             <strong>Grounding DINO</strong>
-            <span>4060 local inference</span>
+            <span id="brand-device">Local inference</span>
           </div>
         </div>
 
         <nav class="nav-list" aria-label="Sections">
-          <a href="#overview" class="active">Full Result</a>
+          <a href="#overview" class="active">Training Result</a>
           <a href="#live">Live Inference</a>
-          <a href="#demo">Saved Samples</a>
-          <a href="#experiments">Experiments</a>
-          <a href="#reports">Report Figures</a>
           <a href="#run">Run Locally</a>
         </nav>
 
@@ -39,28 +36,60 @@
         <section id="overview" class="section section-tight">
           <div class="section-heading">
             <div>
-              <p class="eyebrow">COCO val2017 reproduction</p>
-              <h1>Full 5000-image result on your RTX 4060</h1>
+              <p class="eyebrow">Current training run only</p>
+              <h1 id="overview-title">Training results from aaa</h1>
             </div>
-            <div class="run-chip" id="dataset-chip">Loading full run...</div>
+            <div class="run-chip" id="dataset-chip">Loading current run...</div>
           </div>
 
           <div class="metric-grid" id="metric-grid" aria-live="polite"></div>
 
-          <div class="split-grid">
+          <div class="panel insight-panel" id="run-insights"></div>
+
+          <div class="chart-grid">
             <div class="panel">
               <div class="panel-title">
-                <h2>Object scale performance</h2>
-                <span>AP by size</span>
+                <h2>AP trend by epoch</h2>
+                <span>mAP / AP50 / AP75</span>
               </div>
-              <div class="bars" id="size-bars"></div>
+              <div id="trend-chart" class="chart-box"></div>
             </div>
             <div class="panel">
               <div class="panel-title">
-                <h2>Recall profile</h2>
-                <span>AR at proposal limits</span>
+                <h2>Object-size AP</h2>
+                <span>small / medium / large</span>
               </div>
-              <div class="bars" id="recall-bars"></div>
+              <div id="size-chart" class="chart-box"></div>
+            </div>
+          </div>
+
+          <div class="split-grid">
+            <div class="panel">
+              <div class="panel-title">
+                <h2>mAP by epoch</h2>
+                <span>current training run</span>
+              </div>
+              <div class="bars" id="map-bars"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-title">
+                <h2>Best epoch breakdown</h2>
+                <span id="best-epoch-label">loading</span>
+              </div>
+              <div class="bars" id="best-bars"></div>
+            </div>
+          </div>
+
+          <div class="panel training-table-panel">
+            <div class="panel-title">
+              <h2>Epoch metrics</h2>
+              <span>no historical results loaded</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead id="training-head"></thead>
+                <tbody id="training-body"></tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -121,67 +150,6 @@
           </div>
         </section>
 
-        <section id="demo" class="section">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Saved qualitative inference</p>
-              <h2>Detection explorer</h2>
-            </div>
-            <label class="slider-control">
-              <span>Score threshold</span>
-              <input id="score-threshold" type="range" min="0" max="1" value="0.35" step="0.05" />
-              <strong id="threshold-value">0.35</strong>
-            </label>
-          </div>
-
-          <div class="demo-grid">
-            <div class="image-stage">
-              <img id="selected-image" alt="Annotated detection output" />
-            </div>
-            <div class="panel detection-panel">
-              <div class="panel-title">
-                <h2 id="selected-name">Sample</h2>
-                <span id="selected-summary">Loading...</span>
-              </div>
-              <div class="sample-strip" id="sample-strip"></div>
-              <div class="detection-list" id="detection-list"></div>
-            </div>
-          </div>
-        </section>
-
-        <section id="experiments" class="section">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Ablation studies</p>
-              <h2>Thresholds and prompt format</h2>
-            </div>
-            <div class="segmented" role="tablist" aria-label="Experiment table selector">
-              <button class="active" data-experiment="threshold">Threshold</button>
-              <button data-experiment="prompt">Prompt</button>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="experiment-chart" id="experiment-chart"></div>
-            <div class="table-wrap">
-              <table>
-                <thead id="experiment-head"></thead>
-                <tbody id="experiment-body"></tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section id="reports" class="section">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Report-ready visuals</p>
-              <h2>Figures generated from project outputs</h2>
-            </div>
-          </div>
-          <div class="figure-grid" id="figure-grid"></div>
-        </section>
-
         <section id="run" class="section">
           <div class="section-heading">
             <div>
@@ -206,10 +174,10 @@
             </div>
             <div class="command-card">
               <div>
-                <strong>Run full COCO evaluation</strong>
-                <code>.venv\Scripts\python.exe scripts\eval.py --config configs\grounding_dino.yaml --checkpoint checkpoints\groundingdino_swint_ogc.pth --coco_image_dir data\coco\val2017 --coco_ann_file data\coco\annotations\instances_val2017.json --output_dir outputs\coco_eval\my_full_val2017 --device cuda</code>
+                <strong>Current result source</strong>
+                <code>outputs\experiments\aaa_training_metrics.json</code>
               </div>
-              <button data-copy=".venv\Scripts\python.exe scripts\eval.py --config configs\grounding_dino.yaml --checkpoint checkpoints\groundingdino_swint_ogc.pth --coco_image_dir data\coco\val2017 --coco_ann_file data\coco\annotations\instances_val2017.json --output_dir outputs\coco_eval\my_full_val2017 --device cuda">Copy</button>
+              <button data-copy="outputs\experiments\aaa_training_metrics.json">Copy</button>
             </div>
           </div>
         </section>
