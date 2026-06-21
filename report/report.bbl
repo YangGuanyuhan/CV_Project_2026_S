@@ -7,8 +7,7 @@
 \providecommand{\BIBentrySTDinterwordspacing}{\spaceskip=0pt\relax}
 \providecommand{\BIBentryALTinterwordstretchfactor}{4}
 \providecommand{\BIBentryALTinterwordspacing}{\spaceskip=\fontdimen2\font plus
-\BIBentryALTinterwordstretchfactor\fontdimen3\font minus
-  \fontdimen4\font\relax}
+\BIBentryALTinterwordstretchfactor\fontdimen3\font minus \fontdimen4\font\relax}
 \providecommand{\BIBforeignlanguage}[2]{{%
 \expandafter\ifx\csname l@#1\endcsname\relax
 \typeout{** WARNING: IEEEtran.bst: No hyphenation pattern has been}%
@@ -22,59 +21,33 @@
 \BIBdecl
 
 \bibitem{Liu23}
-S.~Liu, Z.~Zeng, T.~Ren, F.~Li, H.~Zhang, J.~Yang, Q.~Jiang, C.~Li, J.~Yang,
-  H.~Su, J.~Zhu, and L.~Zhang, ``Grounding {DINO}: Marrying {DINO} with
-  grounded pre-training for open-set object detection,'' in \emph{European
-  Conference on Computer Vision (ECCV)}, 2024.
+S.~Liu, Z.~Zeng, T.~Ren, F.~Li, H.~Zhang, J.~Yang, Q.~Jiang, C.~Li, J.~Yang, H.~Su, J.~Zhu, and L.~Zhang, ``Grounding {DINO}: Marrying {DINO} with grounded pre-training for open-set object detection,'' in \emph{European Conference on Computer Vision (ECCV)}, 2024.
 
 \bibitem{Carion20}
-N.~Carion, F.~Massa, G.~Synnaeve, N.~Usunier, A.~Kirillov, and S.~Zagoruyko,
-  ``End-to-end object detection with transformers,'' in \emph{European
-  Conference on Computer Vision (ECCV)}, 2020.
+N.~Carion, F.~Massa, G.~Synnaeve, N.~Usunier, A.~Kirillov, and S.~Zagoruyko, ``End-to-end object detection with transformers,'' in \emph{European Conference on Computer Vision (ECCV)}, 2020.
 
 \bibitem{Zhu21}
-X.~Zhu, W.~Su, L.~Lu, B.~Li, X.~Wang, and J.~Dai, ``Deformable {DETR}:
-  Deformable transformers for end-to-end object detection,'' in
-  \emph{International Conference on Learning Representations (ICLR)}, 2021.
+X.~Zhu, W.~Su, L.~Lu, B.~Li, X.~Wang, and J.~Dai, ``Deformable {DETR}: Deformable transformers for end-to-end object detection,'' in \emph{International Conference on Learning Representations (ICLR)}, 2021.
 
 \bibitem{Zhang23}
-H.~Zhang, F.~Li, S.~Liu, L.~Zhang, H.~Su, J.~Zhu, L.~M. Ni, and H.-Y. Shum,
-  ``{DINO}: {DETR} with improved denoising anchor boxes for end-to-end object
-  detection,'' in \emph{International Conference on Learning Representations
-  (ICLR)}, 2023.
+H.~Zhang, F.~Li, S.~Liu, L.~Zhang, H.~Su, J.~Zhu, L.~M. Ni, and H.-Y. Shum, ``{DINO}: {DETR} with improved denoising anchor boxes for end-to-end object detection,'' in \emph{International Conference on Learning Representations (ICLR)}, 2023.
 
 \bibitem{Liu21}
-Z.~Liu, Y.~Lin, Y.~Cao, H.~Hu, Y.~Wei, Z.~Zhang, S.~Lin, and B.~Guo, ``Swin
-  transformer: Hierarchical vision transformer using shifted windows,'' in
-  \emph{IEEE/CVF International Conference on Computer Vision (ICCV)}, 2021.
+Z.~Liu, Y.~Lin, Y.~Cao, H.~Hu, Y.~Wei, Z.~Zhang, S.~Lin, and B.~Guo, ``Swin transformer: Hierarchical vision transformer using shifted windows,'' in \emph{IEEE/CVF International Conference on Computer Vision (ICCV)}, 2021.
 
 \bibitem{Devlin19}
-J.~Devlin, M.-W. Chang, K.~Lee, and K.~Toutanova, ``{BERT}: Pre-training of
-  deep bidirectional transformers for language understanding,'' in
-  \emph{Conference of the North American Chapter of the Association for
-  Computational Linguistics (NAACL)}, 2019.
+J.~Devlin, M.-W. Chang, K.~Lee, and K.~Toutanova, ``{BERT}: Pre-training of deep bidirectional transformers for language understanding,'' in \emph{Conference of the North American Chapter of the Association for Computational Linguistics (NAACL)}, 2019.
 
 \bibitem{Li22}
-L.~H. Li, P.~Zhang, H.~Zhang, J.~Yang, C.~Li, Y.~Zhong, L.~Wang, L.~Yuan,
-  L.~Zhang, J.-N. Hwang, K.-W. Chang, and J.~Gao, ``Grounded language-image
-  pre-training,'' in \emph{IEEE/CVF Conference on Computer Vision and Pattern
-  Recognition (CVPR)}, 2022.
+L.~H. Li, P.~Zhang, H.~Zhang, J.~Yang, C.~Li, Y.~Zhong, L.~Wang, L.~Yuan, L.~Zhang, J.-N. Hwang, K.-W. Chang, and J.~Gao, ``Grounded language-image pre-training,'' in \emph{IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2022.
 
 \bibitem{Minderer22}
-M.~Minderer, A.~Gritsenko, A.~Stone, M.~Neumann, D.~Weissenborn,
-  A.~Dosovitskiy, A.~Mahendran, A.~Arnab, M.~Dehghani, Z.~Shen, X.~Wang,
-  X.~Zhai, T.~Kipf, and N.~Houlsby, ``Simple open-vocabulary object detection
-  with vision transformers,'' in \emph{European Conference on Computer Vision
-  (ECCV)}, 2022.
+M.~Minderer, A.~Gritsenko, A.~Stone, M.~Neumann, D.~Weissenborn, A.~Dosovitskiy, A.~Mahendran, A.~Arnab, M.~Dehghani, Z.~Shen, X.~Wang, X.~Zhai, T.~Kipf, and N.~Houlsby, ``Simple open-vocabulary object detection with vision transformers,'' in \emph{European Conference on Computer Vision (ECCV)}, 2022.
 
 \bibitem{Cheng24}
-T.~Cheng, L.~Song, Y.~Ge, W.~Liu, X.~Wang, and Y.~Shan, ``{YOLO}-world:
-  Real-time open-vocabulary object detection,'' in \emph{IEEE/CVF Conference on
-  Computer Vision and Pattern Recognition (CVPR)}, 2024.
+T.~Cheng, L.~Song, Y.~Ge, W.~Liu, X.~Wang, and Y.~Shan, ``{YOLO}-world: Real-time open-vocabulary object detection,'' in \emph{IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, 2024.
 
 \bibitem{Lin14}
-T.-Y. Lin, M.~Maire, S.~Belongie, J.~Hays, P.~Perona, D.~Ramanan,
-  P.~Doll{\'a}r, and C.~L. Zitnick, ``Microsoft {COCO}: Common objects in
-  context,'' in \emph{European Conference on Computer Vision (ECCV)}, 2014.
+T.-Y. Lin, M.~Maire, S.~Belongie, J.~Hays, P.~Perona, D.~Ramanan, P.~Doll{\'a}r, and C.~L. Zitnick, ``Microsoft {COCO}: Common objects in context,'' in \emph{European Conference on Computer Vision (ECCV)}, 2014.
 
 \end{thebibliography}
