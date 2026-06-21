@@ -101,6 +101,57 @@ python scripts/eval.py \
     --coco_ann_file data/coco/annotations/instances_val2017.json
 ```
 
+### Fine-tuning with MMDetection
+
+Fine-tuning is run through the MMDetection implementation of Grounding DINO.
+The repository keeps the dumped configuration from our 6-epoch run at
+`work_dirs/gdino_ft_short/grounding_dino_swin-t_finetune_16xb2_1x_coco.py`,
+and `scripts/train.py` wraps MMDetection's `tools/train.py` with the paths and
+hyper-parameters used in the project.
+
+Before training, make sure the following resources are available:
+
+- An MMDetection checkout, by default at `../mmdetection`, or set `MMDET_ROOT`.
+- COCO data under `data/coco/`, including `train2017`, `val2017`, and `annotations/`.
+- Local BERT files under `models/bert-base-uncased`, or pass `--bert bert-base-uncased` if online Hugging Face access is available. If the local directory exists but does not contain `config.json`, `scripts/train.py` falls back to `bert-base-uncased`.
+- The MMDetection-format pretrained checkpoint:
+  `checkpoints/groundingdino_swint_ogc_mmdet-822d7e9d.pth`.
+
+Check the generated MMDetection command without starting training:
+
+```bash
+python scripts/train.py --dry-run
+```
+
+Run the 6-epoch fine-tuning used in this project:
+
+```bash
+export MMDET_ROOT=/path/to/mmdetection
+
+python scripts/train.py \
+    --data-root data/coco \
+    --pretrained checkpoints/groundingdino_swint_ogc_mmdet-822d7e9d.pth \
+    --bert bert-base-uncased \
+    --epochs 6 \
+    --batch-size 2 \
+    --lr 5e-5 \
+    --work-dir work_dirs/gdino_ft_reproduce
+```
+
+To resume from an intermediate checkpoint:
+
+```bash
+python scripts/train.py \
+    --resume work_dirs/gdino_ft_reproduce/epoch_3.pth \
+    --work-dir work_dirs/gdino_ft_reproduce
+```
+
+The original run artifacts are kept under `work_dirs/gdino_ft_short/`.
+Evaluation dumps for the selected checkpoints are under
+`work_dirs/gdino_ft_short_eval/` and `work_dirs/gdino_ft_short_eval_ep4_6/`.
+Large checkpoint files (`*.pth`) and logs (`*.log`) are ignored by git, so they
+must be distributed separately if needed.
+
 ### Run Experiments
 
 ```bash
@@ -134,6 +185,7 @@ CV_Project_2026_S/
 ├── scripts/
 │   ├── inference.py           # Single/batch inference
 │   ├── eval.py                # COCO evaluation
+│   ├── train.py               # MMDetection fine-tuning wrapper
 │   ├── run_experiments.py     # Ablation experiments
 │   ├── download_weights.py    # Download model weights
 │   ├── download_coco.py       # Download COCO dataset
@@ -142,6 +194,7 @@ CV_Project_2026_S/
 ├── data/                      # Datasets (not tracked)
 ├── checkpoints/               # Model weights (not tracked)
 ├── outputs/                   # Results and visualizations
+├── work_dirs/                 # MMDetection configs and evaluation dumps
 └── docs/
     ├── plans/                 # Project plans
     ├── stage_reports/         # Stage-by-stage reports
